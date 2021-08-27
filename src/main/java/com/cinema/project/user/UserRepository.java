@@ -13,17 +13,18 @@ public class UserRepository {
     private final DataSource dataSource;
 
     @SneakyThrows
-    public Optional<User> getUserById(Long id) {
+    public Optional<User> getUserById(String login) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT login FROM users WHERE id IN (?)");) {
-            preparedStatement.setLong(1, id);
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM user WHERE login IN (?)");) {
+            preparedStatement.setString(1, login);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                User user = new User(id, resultSet.getString("login"));
+                User user = new User(resultSet.getLong("id"),
+                        resultSet.getString("login"),
+                        resultSet.getString("password"),
+                        UserRole.valueOf(resultSet.getString("role")));
                 return Optional.of(user);
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
         }
         return Optional.empty();
     }

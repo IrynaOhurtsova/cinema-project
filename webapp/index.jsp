@@ -9,7 +9,7 @@
             Hi, this is cinema project please login to get started
         </p>
          <form method="POST" action="/app/cinema/user/login">
-              <label for="name">username:</label>
+              <label for="login">login:</label>
               <input type="text" id="login" name="login">
               <label for="pass">password:</label>
               <input type="password" id="password" name="password">

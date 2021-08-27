@@ -2,7 +2,6 @@ package com.cinema.project.infra.web;
 
 import com.cinema.project.infra.config.ConfigLoader;
 import com.cinema.project.infra.db.DataSourceConfig;
-import com.cinema.project.infra.web.exeption.handler.BaseExceptionHandler;
 import com.cinema.project.infra.web.exeption.handler.ExceptionHandler;
 import com.cinema.project.infra.web.exeption.handler.ExceptionHandlerConfig;
 import com.cinema.project.infra.web.request.ControllerFunctionHolder;
@@ -10,9 +9,12 @@ import com.cinema.project.infra.web.request.RequestHandler;
 import com.cinema.project.infra.web.response.ModelAndView;
 import com.cinema.project.infra.web.response.ModelAndViewHandler;
 import com.cinema.project.infra.web.response.ResponseHandler;
-import com.cinema.project.schedule.ScheduleController;
-import com.cinema.project.schedule.ScheduleRepository;
-import com.cinema.project.schedule.ScheduleService;
+import com.cinema.project.movie.MovieController;
+import com.cinema.project.movie.MovieRepository;
+import com.cinema.project.movie.MovieService;
+import com.cinema.project.schedule.SeanceController;
+import com.cinema.project.schedule.SeanceRepository;
+import com.cinema.project.schedule.SeanceService;
 import com.cinema.project.user.UserController;
 import com.cinema.project.user.UserRepository;
 import com.cinema.project.user.UserService;
@@ -51,12 +53,17 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         //user
         UserRepository userRepository = new UserRepository(dataSource);
         UserService userService = new UserService(userRepository);
-        UserController userController = new UserController(userService);
+        UserController userController = new UserController(userService, queryValueResolver);
 
-        //schedule
-        ScheduleRepository scheduleRepository = new ScheduleRepository(dataSource);
-        ScheduleService scheduleService = new ScheduleService(scheduleRepository);
-        ScheduleController scheduleController = new ScheduleController(scheduleService);
+        //movie
+        MovieRepository movieRepository = new MovieRepository(dataSource);
+        MovieService movieService = new MovieService(movieRepository);
+        MovieController movieController = new MovieController(movieService);
+
+        //seance
+        SeanceRepository seanceRepository = new SeanceRepository(dataSource);
+        SeanceService seanceService = new SeanceService(seanceRepository, movieService);
+        SeanceController seanceController = new SeanceController(seanceService, queryValueResolver);
 
         //web
         ExceptionHandlerConfig exceptionHandlerConfig = new ExceptionHandlerConfig();
@@ -64,7 +71,7 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         Supplier<ModelAndView> controllerNotFoundResponseSupplier = () -> ModelAndView.withView("/error/notfound.jsp");
 
         final ControllerFunctionHolder holder1 =
-                new ControllerFunctionHolder("/mainpage", "GET", request -> scheduleController.fullSchedule());
+                new ControllerFunctionHolder("/mainpage", "GET", request -> seanceController.allSeances());
         ControllerFunctionHolder holder =
                 new ControllerFunctionHolder("/user/login", "POST", request -> userController.login(request));
         List<ControllerFunctionHolder> controllerFunctionHolders = Arrays.asList(holder, holder1);

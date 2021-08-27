@@ -8,9 +8,13 @@
     <body>
    <table>
    <p>start table</p>
-        <c:forEach var="seance" items="${schedule.seances}">
+        <c:forEach var="seance" items="${seances}">
    			<tr>
-   				<td>${seance.id}</td>
+   				<td>${seance.date}</td>
+   				<td>${seance.time}</td>
+   				<td>${seance.movie.title}</td>
+   				<td>${seance.price}</td>
+   				<td>${seance.freePlaces}</td>
    			</tr>
    		</c:forEach>
    	</table>

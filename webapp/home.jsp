@@ -7,7 +7,10 @@
     </head>
     <body>
         <p>
-            Welcome to home page, ${user.name}
+            Welcome to home page, ${user.login}
         </p>
+        <a href="/app/cinema/mainpage">
+            Schedule of films
+        </a>
     </body>
 </html

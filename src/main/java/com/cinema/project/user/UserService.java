@@ -7,9 +7,10 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User loginUser(Long id) {
-        return userRepository.getUserById(id)
-                .orElseThrow(()->new RuntimeException("User by id " + id + " not found"));
+    public User loginUser(UserLoginRequestDto userLoginRequestDto) {
+        return userRepository.getUserById(userLoginRequestDto.getLogin())
+                .filter(user -> user.getPassword().equals(userLoginRequestDto.getPassword()))
+                .orElseThrow(()->new UserLoginException("wrong login or password"));
     }
 
 }

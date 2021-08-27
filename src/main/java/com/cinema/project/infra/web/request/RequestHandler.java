@@ -32,6 +32,7 @@ public class RequestHandler {
         try {
             return  handler.apply(req);
         } catch (Exception exception) {
+            exception.printStackTrace();
             return exceptionHandler.handle(exception);
         }
     }

@@ -1,5 +1,6 @@
 package com.cinema.project.schedule;
 
+import liquibase.pro.packaged.S;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -9,31 +10,28 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
-public class ScheduleRepository {
+public class SeanceRepository {
 
     private final DataSource dataSource;
 
     @SneakyThrows
-    public Schedule getFullSchedule() {
-        String sql_query = "SELECT schedule.*, movie.movie_title FROM SCHEDULE INNER JOIN movie " +
-                "ON schedule.movie_id = movie.id";
+    public List<Seance> getAllSeances() {
+        String sql_query = "SELECT * FROM seance";
         try(Connection connection = dataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql_query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Seance> seances = new ArrayList<>();
             while (resultSet.next()) {
                 seances.add(new Seance(resultSet.getLong("id"),
-                        resultSet.getDate("date"),
-                        resultSet.getTime("time"),
+                        resultSet.getDate("date").toLocalDate(),
+                        resultSet.getTime("time").toLocalTime(),
                         resultSet.getLong("movie_id"),
                         resultSet.getDouble("price"),
-                        resultSet.getInt("free_places"),
-                        resultSet.getString("movie_title")));
+                        resultSet.getInt("free_places")));
             }
-            return new Schedule(seances);
+            return seances;
         }
     }
 }
