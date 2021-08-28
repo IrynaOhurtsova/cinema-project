@@ -51,4 +51,20 @@ public class MovieRepository {
             return result;
         }
     }
+
+    @SneakyThrows
+    public Optional<Movie> getMovieByTitle(String title) {
+        String sql_query = "SELECT * FROM movie WHERE movie.title = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql_query)) {
+            preparedStatement.setString(1, title);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                Movie movie = new Movie(resultSet.getLong("id"),
+                        resultSet.getString("title"));
+                return Optional.of(movie);
+            }
+            return Optional.empty();
+        }
+    }
 }

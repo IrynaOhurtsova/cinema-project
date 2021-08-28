@@ -6,11 +6,18 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserLoginRequestDtoToClientMapper userLoginRequestDtoToClientMapper;
+    private final ClientRegisterValidator clientRegisterValidator;
 
     public User loginUser(UserLoginRequestDto userLoginRequestDto) {
-        return userRepository.getUserById(userLoginRequestDto.getLogin())
+        return userRepository.getUserByLogin(userLoginRequestDto.getLogin())
                 .filter(user -> user.getPassword().equals(userLoginRequestDto.getPassword()))
                 .orElseThrow(()->new UserLoginException("wrong login or password"));
+    }
+
+    public User registerClient(UserLoginRequestDto userLoginRequestDto) {
+        User client = userLoginRequestDtoToClientMapper.map(userLoginRequestDto);
+        return userRepository.registerClient(clientRegisterValidator.validate(client));
     }
 
 }

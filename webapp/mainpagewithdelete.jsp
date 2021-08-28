@@ -21,6 +21,12 @@
    				<td>${seance.movie.title}</td>
    				<td>${seance.price}</td>
    				<td>${seance.seatingCapacity}</td>
+   				<td>
+   				    <form method="POST" action="/app/cinema/seance/delete">
+                              <input type="hidden" name="id" value="${seance.id}">
+                              <input type="submit" value="delete">
+                    </form>
+   				</td>
    			</tr>
    		</c:forEach>
    	</table>

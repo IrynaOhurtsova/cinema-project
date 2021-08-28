@@ -1,16 +1,15 @@
-package com.cinema.project.schedule;
+package com.cinema.project.seance;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class Seance {
 
     private Long id;
@@ -18,5 +17,5 @@ public class Seance {
     private LocalTime time;
     private Long movieId;
     private Double price;
-    private Integer freePlaces;
+    private Integer seatingCapacity;
 }

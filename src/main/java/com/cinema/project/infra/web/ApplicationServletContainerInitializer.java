@@ -12,14 +12,11 @@ import com.cinema.project.infra.web.response.ResponseHandler;
 import com.cinema.project.movie.MovieController;
 import com.cinema.project.movie.MovieRepository;
 import com.cinema.project.movie.MovieService;
-import com.cinema.project.schedule.SeanceController;
-import com.cinema.project.schedule.SeanceRepository;
-import com.cinema.project.schedule.SeanceService;
-import com.cinema.project.user.UserController;
-import com.cinema.project.user.UserRepository;
-import com.cinema.project.user.UserService;
+import com.cinema.project.seance.*;
+import com.cinema.project.user.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
@@ -44,6 +41,7 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
     private FrontServlet buildApplication() {
         //infra
         ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+        objectMapper.registerModule(new JSR310Module());
         ConfigLoader configLoader = new ConfigLoader(objectMapper);
         QueryValueResolver queryValueResolver = new QueryValueResolver(objectMapper);
 
@@ -52,7 +50,9 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
 
         //user
         UserRepository userRepository = new UserRepository(dataSource);
-        UserService userService = new UserService(userRepository);
+        ClientRegisterValidator clientRegisterValidator = new ClientRegisterValidator(userRepository);
+        UserLoginRequestDtoToClientMapper userLoginRequestDtoToClientMapper = new UserLoginRequestDtoToClientMapper();
+        UserService userService = new UserService(userRepository, userLoginRequestDtoToClientMapper, clientRegisterValidator);
         UserController userController = new UserController(userService, queryValueResolver);
 
         //movie
@@ -62,7 +62,11 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
 
         //seance
         SeanceRepository seanceRepository = new SeanceRepository(dataSource);
-        SeanceService seanceService = new SeanceService(seanceRepository, movieService);
+        SeanceCreateValidatorConfig seanceCreateValidatorConfig = new SeanceCreateValidatorConfig();
+        SeanceCreateValidator seanceCreateValidator = seanceCreateValidatorConfig.seanceCreateValidator();
+        seanceCreateValidator.setSeanceRepository(seanceRepository);
+        SeanceCreateDtoToSeanceMapper seanceCreateDtoToSeanceMapper = new SeanceCreateDtoToSeanceMapper(movieService);
+        SeanceService seanceService = new SeanceService(seanceRepository, movieService, seanceCreateValidator, seanceCreateDtoToSeanceMapper);
         SeanceController seanceController = new SeanceController(seanceService, queryValueResolver);
 
         //web
@@ -70,11 +74,20 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         ExceptionHandler exceptionHandler = exceptionHandlerConfig.exceptionHandler();
         Supplier<ModelAndView> controllerNotFoundResponseSupplier = () -> ModelAndView.withView("/error/notfound.jsp");
 
-        final ControllerFunctionHolder holder1 =
+
+        ControllerFunctionHolder holder2 =
+                new ControllerFunctionHolder("/seance/create", "GET", request -> seanceController.createSeance(request));
+        ControllerFunctionHolder holder1 =
                 new ControllerFunctionHolder("/mainpage", "GET", request -> seanceController.allSeances());
         ControllerFunctionHolder holder =
                 new ControllerFunctionHolder("/user/login", "POST", request -> userController.login(request));
-        List<ControllerFunctionHolder> controllerFunctionHolders = Arrays.asList(holder, holder1);
+        ControllerFunctionHolder holder3 =
+                new ControllerFunctionHolder("/seance/delete", "POST", request -> seanceController.delete(request));
+        ControllerFunctionHolder holder4 =
+                new ControllerFunctionHolder("/mainpagewithdelete", "GET", request -> seanceController.allSeancesWithDelete());
+        ControllerFunctionHolder holder5 =
+                new ControllerFunctionHolder("/user/register", "POST", request -> userController.registerUser(request));
+        List<ControllerFunctionHolder> controllerFunctionHolders = Arrays.asList(holder, holder1, holder2, holder3, holder4, holder5);
 
         RequestHandler requestHandler = new RequestHandler(controllerFunctionHolders, exceptionHandler, controllerNotFoundResponseSupplier);
         ResponseHandler<ModelAndView> responseHandler = new ModelAndViewHandler();

@@ -1,7 +1,6 @@
-package com.cinema.project.schedule;
+package com.cinema.project.seance;
 
 import com.cinema.project.movie.Movie;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Value;
 
 import java.time.LocalDate;
@@ -14,7 +13,7 @@ public class SeanceWithMovieTitleDto {
     LocalDate date;
     LocalTime time;
     Double price;
-    Integer freePlaces;
+    Integer seatingCapacity;
     Movie movie;
 
     public SeanceWithMovieTitleDto(Seance seance, Movie movie) {
@@ -22,7 +21,7 @@ public class SeanceWithMovieTitleDto {
         date = seance.getDate();
         time = seance.getTime();
         price = seance.getPrice();
-        freePlaces = seance.getFreePlaces();
+        seatingCapacity = seance.getSeatingCapacity();
         this.movie = movie;
     }
 }

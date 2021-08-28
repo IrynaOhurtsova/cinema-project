@@ -22,4 +22,9 @@ public class MovieService {
                 .stream()
                 .collect(Collectors.toMap(Movie::getId, Function.identity()));
     }
+
+    public Movie getMovieByTitle(String title) throws MovieNotFoundException {
+        return movieRepository.getMovieByTitle(title)
+                .orElseThrow(() -> new MovieNotFoundException("wrong title of movie"));
+    }
 }

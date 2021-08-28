@@ -1,7 +1,8 @@
-package com.cinema.project.schedule;
+package com.cinema.project.seance;
 
 import com.cinema.project.movie.Movie;
 import com.cinema.project.movie.MovieService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -13,6 +14,8 @@ public class SeanceService {
 
     private final SeanceRepository seanceRepository;
     private final MovieService movieService;
+    private final SeanceCreateValidator seanceCreateValidator;
+    private final SeanceCreateDtoToSeanceMapper seanceCreateDtoToSeanceMapper;
 
     public List<SeanceWithMovieTitleDto> getAllSeances() {
         List<Seance> seances = seanceRepository.getAllSeances();
@@ -26,4 +29,14 @@ public class SeanceService {
                 .map(seance -> new SeanceWithMovieTitleDto(seance, moviesById.get(seance.getMovieId())))
                 .collect(Collectors.toList());
     }
+
+    public Seance createSeance(SeanceCreateDto seanceCreateDto) {
+        Seance seance = seanceCreateDtoToSeanceMapper.map(seanceCreateDto);
+        return seanceRepository.createSeance(seanceCreateValidator.validate(seance));
+    }
+
+    public Seance deleteSeanceById(Long id) {
+        return seanceRepository.deleteSeanceById(id);
+    }
+
 }

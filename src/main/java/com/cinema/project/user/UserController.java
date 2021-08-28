@@ -22,4 +22,14 @@ public class UserController {
         modelAndView.setRedirect(true);
         return modelAndView;
     }
+
+    public ModelAndView registerUser(HttpServletRequest request) {
+        UserLoginRequestDto loginRequestDto = queryValueResolver.getObject(request, UserLoginRequestDto.class);
+        User client = userService.registerClient(loginRequestDto);
+        HttpSession session = request.getSession();
+        session.setAttribute("user", client);
+        ModelAndView modelAndView = ModelAndView.withView("/home.jsp");
+        modelAndView.setRedirect(true);
+        return modelAndView;
+    }
 }

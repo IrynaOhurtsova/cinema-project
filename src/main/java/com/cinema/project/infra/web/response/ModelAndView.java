@@ -21,8 +21,9 @@ public class ModelAndView {
         return new ModelAndView(view, false);
     }
 
-    public void addAttribute(String name, Object attribute) {
+    public ModelAndView addAttribute(String name, Object attribute) {
         attributes.put(name, attribute);
+        return this;
     }
 
 }
