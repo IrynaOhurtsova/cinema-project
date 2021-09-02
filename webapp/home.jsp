@@ -9,7 +9,7 @@
         <p>
             Welcome to home page, ${user.login}
         </p>
-        <a href="/app/cinema/mainpage">
+        <a href="/app/cinema/buyticket">
             Schedule of films
         </a>
     </body>

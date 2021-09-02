@@ -3,6 +3,7 @@ package com.cinema.project.infra.web.exeption.handler;
 import com.cinema.project.infra.web.response.ModelAndView;
 import com.cinema.project.movie.MovieNotFoundException;
 import com.cinema.project.seance.SeanceCreateException;
+import com.cinema.project.ticket.TicketCreateException;
 import com.cinema.project.user.UserLoginException;
 
 import java.util.Arrays;
@@ -19,7 +20,9 @@ public class ExceptionHandlerConfig {
                         exception -> ModelAndView.withView("/error/creatingisimpossible.jsp")
                                 .addAttribute("message", exception.getMessage())),
                 new ExceptionHandlerFunctionHolder(exception -> exception instanceof MovieNotFoundException,
-                        exception -> ModelAndView.withView("/error/movienotfound.jsp")));
+                        exception -> ModelAndView.withView("/error/movienotfound.jsp")),
+                new ExceptionHandlerFunctionHolder(exception -> exception instanceof TicketCreateException,
+                        exception -> ModelAndView.withView("/error/ticketbuying.jsp")));
         return new BaseExceptionHandler(holders, () -> ModelAndView.withView("/error/notfound.jsp"));
     }
 }

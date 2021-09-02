@@ -1,14 +1,13 @@
 package com.cinema.project.seance;
 
+import lombok.Value;
+
 import java.time.LocalTime;
 
+@Value
 public class SeanceCreateValidatorConfig {
 
-    public SeanceCreateValidator seanceCreateValidator() {
-        return SeanceCreateValidator.builder()
-                .maxSeatingCapacity(300)
-                .minTimeSeance(LocalTime.of(9, 0))
-                .maxTimeSeance(LocalTime.of(22, 0))
-                .build();
-    }
+    Integer maxSeatingCapacity;
+    LocalTime minTimeSeance;
+    LocalTime maxTimeSeance;
 }

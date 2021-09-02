@@ -6,14 +6,14 @@
     </head>
     <body>
         <p>
-            Hi, this is cinema project please login to get started
+            Please create login and password to get started
         </p>
          <form method="POST" action="/app/cinema/user/register">
               <label for="login">login:</label>
               <input type="text" id="login" name="login">
               <label for="pass">password:</label>
               <input type="password" id="password" name="password">
-              <input type="submit" value="login">
+              <input type="submit" value="sign up">
          </form>
     </body>
 </html>

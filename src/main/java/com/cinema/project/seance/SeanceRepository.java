@@ -75,31 +75,51 @@ public class SeanceRepository {
     }
 
     @SneakyThrows
-    public Seance findSeanceByID(Long id) {
+    public Optional<Seance> findSeanceByID(Long id) {
         String sql_query = "SELECT * FROM seance WHERE id IN (?)";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql_query)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            return new Seance((resultSet.getLong("id")),
-                    resultSet.getDate("date").toLocalDate(),
-                    resultSet.getTime("time").toLocalTime(),
-                    resultSet.getLong("movie_id"),
-                    resultSet.getDouble("price"),
-                    resultSet.getInt("seating_capacity"));
+            if (resultSet.next()) {
+                return Optional.of(new Seance((resultSet.getLong("id")),
+                        resultSet.getDate("date").toLocalDate(),
+                        resultSet.getTime("time").toLocalTime(),
+                        resultSet.getLong("movie_id"),
+                        resultSet.getDouble("price"),
+                        resultSet.getInt("seating_capacity")));
+            }
+        }
+        return Optional.empty();
+    }
+
+    @SneakyThrows
+    public Seance deleteSeanceById(Seance seance) {
+        String sql_query = "DELETE FROM seance WHERE id IN (?)";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql_query)) {
+            preparedStatement.setLong(1, seance.getId());
+            preparedStatement.executeUpdate();
+            return seance;
         }
     }
 
     @SneakyThrows
-    public Seance deleteSeanceById(Long id) {
-        String sql_query = "DELETE FROM seance WHERE id IN (?)";
-        Seance seance = findSeanceByID(id);
+    public List<Seance> getSeancesByIds(String ids) {
+        String sql_query = "SELECT * FROM seance WHERE id IN (%s)";
+        List<Seance> seances = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql_query)) {
-            preparedStatement.setLong(1, id);
-            preparedStatement.executeUpdate();
-            return seance;
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(String.format(sql_query,ids));
+            while (resultSet.next()) {
+                seances.add(new Seance((resultSet.getLong("id")),
+                        resultSet.getDate("date").toLocalDate(),
+                        resultSet.getTime("time").toLocalTime(),
+                        resultSet.getLong("movie_id"),
+                        resultSet.getDouble("price"),
+                        resultSet.getInt("seating_capacity")));
+            }
+            return seances;
         }
     }
 }

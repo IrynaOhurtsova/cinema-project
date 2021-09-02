@@ -2,15 +2,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>New Seance</title>
+        <title>Buying has done</title>
         <meta charset="UTF-8">
     </head>
     <body>
         <p>
-            New seance created on ${seance.date} at ${seance.time}
+            Thank You for buying!
         </p>
-        <a href="/app/cinema/mainpage">
+        <a href="/app/cinema/buyticket">
             Schedule of films
+        </a>
+        <a href="/app/cinema/ticket/mytickets">
+            My tickets
         </a>
     </body>
 </html>

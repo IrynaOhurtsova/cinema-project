@@ -13,6 +13,10 @@ import com.cinema.project.movie.MovieController;
 import com.cinema.project.movie.MovieRepository;
 import com.cinema.project.movie.MovieService;
 import com.cinema.project.seance.*;
+import com.cinema.project.ticket.TicketController;
+import com.cinema.project.ticket.TicketCreateValidator;
+import com.cinema.project.ticket.TicketRepository;
+import com.cinema.project.ticket.TicketService;
 import com.cinema.project.user.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -23,6 +27,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.sql.DataSource;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -62,12 +67,17 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
 
         //seance
         SeanceRepository seanceRepository = new SeanceRepository(dataSource);
-        SeanceCreateValidatorConfig seanceCreateValidatorConfig = new SeanceCreateValidatorConfig();
-        SeanceCreateValidator seanceCreateValidator = seanceCreateValidatorConfig.seanceCreateValidator();
-        seanceCreateValidator.setSeanceRepository(seanceRepository);
+        SeanceCreateValidatorConfig seanceCreateValidatorConfig = new SeanceCreateValidatorConfig(5, LocalTime.of(9, 0), LocalTime.of(22, 0));
+        SeanceCreateValidator seanceCreateValidator = new SeanceCreateValidator(seanceRepository, seanceCreateValidatorConfig);
         SeanceCreateDtoToSeanceMapper seanceCreateDtoToSeanceMapper = new SeanceCreateDtoToSeanceMapper(movieService);
         SeanceService seanceService = new SeanceService(seanceRepository, movieService, seanceCreateValidator, seanceCreateDtoToSeanceMapper);
         SeanceController seanceController = new SeanceController(seanceService, queryValueResolver);
+
+        //ticket
+        TicketRepository ticketRepository = new TicketRepository(dataSource);
+        TicketCreateValidator ticketCreateValidator = new TicketCreateValidator(ticketRepository, seanceRepository, seanceCreateValidatorConfig);
+        TicketService ticketService = new TicketService(ticketRepository, ticketCreateValidator, seanceService, seanceRepository);
+        TicketController ticketController = new TicketController(ticketService, queryValueResolver);
 
         //web
         ExceptionHandlerConfig exceptionHandlerConfig = new ExceptionHandlerConfig();
@@ -87,7 +97,19 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
                 new ControllerFunctionHolder("/mainpagewithdelete", "GET", request -> seanceController.allSeancesWithDelete());
         ControllerFunctionHolder holder5 =
                 new ControllerFunctionHolder("/user/register", "POST", request -> userController.registerUser(request));
-        List<ControllerFunctionHolder> controllerFunctionHolders = Arrays.asList(holder, holder1, holder2, holder3, holder4, holder5);
+        ControllerFunctionHolder holder6 =
+                new ControllerFunctionHolder("/buyticket", "GET", request -> seanceController.allSeancesWithBuying());
+        ControllerFunctionHolder holder7 =
+                new ControllerFunctionHolder("/ticket/buy", "POST", request -> ticketController.createTicket(request));
+        ControllerFunctionHolder holder8 =
+                new ControllerFunctionHolder("/ticket/mytickets", "GET", request -> ticketController.getAllTicketsByUserId(request));
+        ControllerFunctionHolder holder9 =
+                new ControllerFunctionHolder("/seance/freeplaces", "POST", request -> ticketController.getFreePlacesForSeance(request));
+        ControllerFunctionHolder holder10
+                = new ControllerFunctionHolder("/seance/attendance", "POST", request -> ticketController.getAttendance(request));
+
+        List<ControllerFunctionHolder> controllerFunctionHolders =
+                Arrays.asList(holder, holder1, holder2, holder3, holder4, holder5, holder6, holder7, holder8, holder9, holder10);
 
         RequestHandler requestHandler = new RequestHandler(controllerFunctionHolders, exceptionHandler, controllerNotFoundResponseSupplier);
         ResponseHandler<ModelAndView> responseHandler = new ModelAndViewHandler();

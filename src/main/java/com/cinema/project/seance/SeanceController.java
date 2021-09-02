@@ -28,6 +28,13 @@ public class SeanceController {
         return modelAndView;
     }
 
+    public ModelAndView allSeancesWithBuying() {
+        List<SeanceWithMovieTitleDto> seances = seanceService.getAllSeances();
+        ModelAndView modelAndView = ModelAndView.withView("/mainpagewithbuying.jsp");
+        modelAndView.addAttribute("seances", seances);
+        return modelAndView;
+    }
+
     public ModelAndView createSeance(HttpServletRequest request) {
         SeanceCreateDto seanceCreateDto = queryValueResolver.getObject(request, SeanceCreateDto.class);
         Seance seance = seanceService.createSeance(seanceCreateDto);

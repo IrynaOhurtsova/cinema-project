@@ -1,21 +1,14 @@
 package com.cinema.project.seance;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
-import java.time.LocalTime;
 import java.util.Optional;
 
-@AllArgsConstructor
-@Data
-@Builder
+@RequiredArgsConstructor
 public class SeanceCreateValidator {
 
-    private SeanceRepository seanceRepository;
-    private Integer maxSeatingCapacity;
-    private LocalTime minTimeSeance;
-    private LocalTime maxTimeSeance;
+    private final SeanceRepository seanceRepository;
+    private final SeanceCreateValidatorConfig config;
 
     public Seance validate(Seance seance) {
         if (!checkSeanceTime(seance)) {
@@ -24,15 +17,15 @@ public class SeanceCreateValidator {
         if (checkSeanceDateAndTime(seance).isPresent()) {
             throw new SeanceCreateException("seance with this date and time exists, choose vacant date and time");
         }
-        if (seance.getSeatingCapacity() > maxSeatingCapacity) {
+        if (seance.getSeatingCapacity() > config.getMaxSeatingCapacity()) {
             throw new SeanceCreateException("wrong seating capacity, seating capacity can be to 300 people");
         }
         return seance;
     }
 
     private boolean checkSeanceTime(Seance seance) {
-        return seance.getTime().compareTo(minTimeSeance) >= 0
-                && seance.getTime().compareTo(maxTimeSeance) <= 0;
+        return seance.getTime().compareTo(config.getMinTimeSeance()) >= 0
+                && seance.getTime().compareTo(config.getMaxTimeSeance()) <= 0;
     }
 
     private Optional<Seance> checkSeanceDateAndTime(Seance seance) {

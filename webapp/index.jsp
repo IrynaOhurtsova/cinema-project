@@ -15,5 +15,11 @@
               <input type="password" id="password" name="password">
               <input type="submit" value="login">
          </form>
+        <p><a href="/app/cinema/mainpage">
+           Login as guest
+        </p></a>
+        <p><a href="/app/registeruser.jsp">
+           Sign up
+        </p></a>
     </body>
 </html>

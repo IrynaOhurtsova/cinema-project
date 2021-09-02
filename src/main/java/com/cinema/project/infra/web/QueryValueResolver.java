@@ -18,6 +18,7 @@ public class QueryValueResolver {
     public <T> T getObject(HttpServletRequest request, Class<T> tClass) {
         Map<String, String> parameterMap = new HashMap<>();
         Enumeration<String> parameterNames = request.getParameterNames();
+        System.out.println(parameterNames);
         while (parameterNames.hasMoreElements()) {
             String name = parameterNames.nextElement();
             String parameter = request.getParameter(name);

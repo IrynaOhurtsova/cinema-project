@@ -2,7 +2,6 @@ package com.cinema.project.seance;
 
 import com.cinema.project.movie.Movie;
 import com.cinema.project.movie.MovieService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -19,10 +18,10 @@ public class SeanceService {
 
     public List<SeanceWithMovieTitleDto> getAllSeances() {
         List<Seance> seances = seanceRepository.getAllSeances();
+
         List<Long> moviesId = seances.stream()
                 .map(Seance::getMovieId)
                 .collect(Collectors.toList());
-
         Map<Long, Movie> moviesById = movieService.getMoviesById(moviesId);
 
         return seances.stream()
@@ -36,7 +35,27 @@ public class SeanceService {
     }
 
     public Seance deleteSeanceById(Long id) {
-        return seanceRepository.deleteSeanceById(id);
+        return seanceRepository.deleteSeanceById(seanceRepository.findSeanceByID(id)
+                .orElseThrow(() -> new SeanceExistException("seance doesn't exist")));
+    }
+
+    public Map<Long, SeanceWithMovieTitleDto> getSeancesByIds(List<Long> ids) {
+        String idsParam = ids.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
+        List<Seance> seances = seanceRepository.getSeancesByIds(idsParam);
+
+        // two way for transfer arguments - list ids and string ids
+
+        List<Long> moviesId = seances.stream()
+                .map(Seance::getMovieId)
+                .collect(Collectors.toList());
+        Map<Long, Movie> moviesById = movieService.getMoviesById(moviesId);
+
+
+        return seances.stream()
+                .collect(Collectors.toMap(seance -> seance.getId(),
+                        seance -> new SeanceWithMovieTitleDto(seance, moviesById.get(seance.getMovieId()))));
     }
 
 }

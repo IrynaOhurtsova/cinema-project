@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>New Seance</title>
+        <title>Free places</title>
         <meta charset="UTF-8">
     </head>
     <body>
         <p>
-            New seance created on ${seance.date} at ${seance.time}
+            ${attendance} tickets sold
         </p>
-        <a href="/app/cinema/mainpage">
+        <a href="/app/cinema/mainpagewithdelete">
             Schedule of films
         </a>
     </body>
