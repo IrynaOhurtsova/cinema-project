@@ -20,6 +20,9 @@ public class SeanceCreateValidator {
         if (seance.getSeatingCapacity() > config.getMaxSeatingCapacity()) {
             throw new SeanceCreateException("wrong seating capacity, seating capacity can be to 300 people");
         }
+        if (seance.getFreePlaces() > config.getMaxSeatingCapacity()) {
+            throw new SeanceCreateException("wrong count of free places, it can be to 300 people");
+        }
         return seance;
     }
 

@@ -10,6 +10,7 @@
     <button onclick="sortTable(2)">SORT TITLE</button>
     <button onclick="sortTable(3)">SORT PRICE</button>
     <button onclick="sortTable(5)">SORT FREE PLACES</button>
+
    <table id="myTable">
         <tr>
             <th>DATE</th>
@@ -28,12 +29,6 @@
    				<td>${seance.seatingCapacity}</td>
    				<td>${seance.freePlaces}</td>
    				<td>
-                    <form method="POST" action="/app/cinema/seance/freeplaces">
-                              <input type="hidden" name="seanceId" value="${seance.id}">
-                              <input type="submit" value="free places">
-                    </form>
-                </td>
-   				<td>
    				    <form method="POST" action="/app/cinema/ticket/buy">
                               <input type="hidden" name="seanceId" value="${seance.id}">
                               <input type="submit" value="buy">
@@ -42,7 +37,10 @@
    			</tr>
    		</c:forEach>
    	</table>
+    <form method="POST" action="/app/cinema/seance/available">
 
+         <input type="submit" value="AVAILABLE SEANCES">
+    </form>
     </body>
 </html>
 
@@ -53,52 +51,67 @@ function sortTable(n) {
   switching = true;
   // Set the sorting direction to ascending:
   dir = "asc";
-  /* Сделайте цикл, который будет продолжаться до тех пор, пока
-  никакого переключения не было сделано: */
+  /* Make a loop that will continue until
+  no switching has been done: */
   while (switching) {
-    // Начните с того, что скажите: переключение не выполняется:
+    // Start by saying: no switching is done:
     switching = false;
     rows = table.rows;
-    /* Цикл через все строки таблицы (за исключением
-    во-первых, который содержит заголовки таблиц): */
+    /* Loop through all table rows (except the
+    first, which contains table headers): */
     for (i = 1; i < (rows.length - 1); i++) {
-      // Начните с того, что не должно быть никакого переключения:
+      // Start by saying there should be no switching:
       shouldSwitch = false;
-      /* Получите два элемента, которые вы хотите сравнить,
-      один из текущей строки и один из следующей: */
+      /* Get the two elements you want to compare,
+      one from current row and one from the next: */
       x = rows[i].getElementsByTagName("TD")[n];
       y = rows[i + 1].getElementsByTagName("TD")[n];
-      /* Проверьте, должны ли две строки поменяться местами,
-      основанный на направлении, asc или desc: */
+      /* Check if the two rows should switch place,
+      based on the direction, asc or desc: */
       if (dir == "asc") {
         if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-          // Если это так, отметьте как переключатель и разорвать цикл:
+          // If so, mark as a switch and break the loop:
           shouldSwitch = true;
           break;
         }
       } else if (dir == "desc") {
         if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-          // Если это так, отметьте как переключатель и разорвать цикл:
+          // If so, mark as a switch and break the loop:
           shouldSwitch = true;
           break;
         }
       }
     }
     if (shouldSwitch) {
-      /* Если переключатель был отмечен, сделайте переключатель
-      и отметьте, что переключатель был сделан: */
+      /* If a switch has been marked, make the switch
+      and mark that a switch has been done: */
       rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
       switching = true;
-      // Каждый раз, когда выполняется переключение, увеличьте это число на 1:
+      // Each time a switch is done, increase this count by 1:
       switchcount ++;
     } else {
-      /* Если переключение не было сделано и направление "asc",
-      установите направление на "desc" и снова запустите цикл while. */
+      /* If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again. */
       if (switchcount == 0 && dir == "asc") {
         dir = "desc";
         switching = true;
       }
     }
   }
+}
+</script>
+
+<script>
+const myFunction = () => {
+  const trs = document.querySelectorAll('#myTable tr:not(.header)');
+  const filter = document.querySelector('#myInput').value;
+  const regex = new RegExp(filter, 'i');
+  const isFoundInTds = (td) => regex.test(td.innerHTML);
+  const isFound = (childrenArr) => childrenArr.some(isFoundInTds);
+  const setTrStyleDisplay = ({ style, children }) => {
+    style.display = isFound([...children]) ? '' : 'none';
+  };
+
+  trs.forEach(setTrStyleDisplay);
 }
 </script>

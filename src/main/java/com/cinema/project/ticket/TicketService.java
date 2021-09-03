@@ -4,10 +4,7 @@ import com.cinema.project.seance.*;
 import com.cinema.project.user.User;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -27,6 +24,9 @@ public class TicketService {
 
     public List<TicketWithSeanceDto> getTicketsForUser(User user) {
         List<Ticket> tickets = ticketRepository.getTicketsByUserId(user.getId());
+        if (tickets.size() == 0) {
+            throw new TicketExistException("You don't have any tickets");
+        }
         List<Long> ids = tickets.stream()
                 .map(Ticket::getSeanceId)
                 .collect(Collectors.toList());
@@ -38,12 +38,18 @@ public class TicketService {
 
     }
 
-    //create validator or not? checkFreePlaces in createTicket, so here negativ free places can't be
-    //where the method should be?
-    public int getFreePlacesForSeance(Long seanceId) {
-        Seance seanceById = seanceService.getSeanceById(seanceId);
-        int seatingCapacity = ticketCreateValidator.getSeanceCreateValidatorConfig().getMaxSeatingCapacity();
-        return seatingCapacity - ticketRepository.getTicketsBySeanceId(seanceId).size();
+    public List<SeanceWithMovieTitleDto> getSeanceForUserByTickets(User user) {
+        List<Ticket> tickets = ticketRepository.getTicketsByUserId(user.getId());
+        if (tickets.size() == 0) {
+            throw new TicketExistException("You don't have any tickets");
+        }
+        List<Long> ids = tickets.stream()
+                .map(Ticket::getSeanceId)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Long, SeanceWithMovieTitleDto> seancesByIds = seanceService.getSeancesByIds(ids);
+        Collection<SeanceWithMovieTitleDto> values = seancesByIds.values();
+        return new ArrayList<>(values);
     }
 
     public int getAttendance(Long seanceId) {

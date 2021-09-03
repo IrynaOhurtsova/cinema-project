@@ -75,7 +75,7 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
 
         //ticket
         TicketRepository ticketRepository = new TicketRepository(dataSource);
-        TicketCreateValidator ticketCreateValidator = new TicketCreateValidator(ticketRepository, seanceRepository, seanceCreateValidatorConfig);
+        TicketCreateValidator ticketCreateValidator = new TicketCreateValidator(seanceRepository);
         TicketService ticketService = new TicketService(ticketRepository, ticketCreateValidator, seanceService);
         TicketController ticketController = new TicketController(ticketService, queryValueResolver);
 
@@ -85,31 +85,29 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         Supplier<ModelAndView> controllerNotFoundResponseSupplier = () -> ModelAndView.withView("/error/notfound.jsp");
 
 
-        ControllerFunctionHolder holder2 =
-                new ControllerFunctionHolder("/seance/create", "GET", request -> seanceController.createSeance(request));
-        ControllerFunctionHolder holder1 =
+        ControllerFunctionHolder createSeance =
+                new ControllerFunctionHolder("/seance/create", "GET", seanceController::createSeance);
+        ControllerFunctionHolder allSeances =
                 new ControllerFunctionHolder("/mainpage", "GET", request -> seanceController.allSeances());
-        ControllerFunctionHolder holder =
-                new ControllerFunctionHolder("/user/login", "POST", request -> userController.login(request));
-        ControllerFunctionHolder holder3 =
-                new ControllerFunctionHolder("/seance/delete", "POST", request -> seanceController.delete(request));
-        ControllerFunctionHolder holder4 =
+        ControllerFunctionHolder login =
+                new ControllerFunctionHolder("/user/login", "POST", userController::login);
+        ControllerFunctionHolder deleteSeance =
+                new ControllerFunctionHolder("/seance/delete", "POST", seanceController::delete);
+        ControllerFunctionHolder allSeancesForAdmin =
                 new ControllerFunctionHolder("/mainpagewithdelete", "GET", request -> seanceController.allSeancesWithDelete());
-        ControllerFunctionHolder holder5 =
-                new ControllerFunctionHolder("/user/register", "POST", request -> userController.registerUser(request));
-        ControllerFunctionHolder holder6 =
+        ControllerFunctionHolder registerUser =
+                new ControllerFunctionHolder("/user/register", "POST", userController::registerUser);
+        ControllerFunctionHolder allSeancesForClient =
                 new ControllerFunctionHolder("/buyticket", "GET", request -> seanceController.allSeancesWithBuying());
-        ControllerFunctionHolder holder7 =
-                new ControllerFunctionHolder("/ticket/buy", "POST", request -> ticketController.createTicket(request));
-        ControllerFunctionHolder holder8 =
-                new ControllerFunctionHolder("/ticket/mytickets", "GET", request -> ticketController.getAllTicketsByUserId(request));
-        ControllerFunctionHolder holder9 =
-                new ControllerFunctionHolder("/seance/freeplaces", "POST", request -> ticketController.getFreePlacesForSeance(request));
-        ControllerFunctionHolder holder10
-                = new ControllerFunctionHolder("/seance/attendance", "POST", request -> ticketController.getAttendance(request));
-
+        ControllerFunctionHolder createTicket =
+                new ControllerFunctionHolder("/ticket/buy", "POST", ticketController::createTicket);
+        ControllerFunctionHolder allTicketsByUserId =
+                new ControllerFunctionHolder("/ticket/mytickets", "GET", ticketController::getAllTicketsByUserId);
+        ControllerFunctionHolder filterSeanceForUser =
+                new ControllerFunctionHolder("/seance/available", "POST", ticketController::getSeancesForUserByTickets);
         List<ControllerFunctionHolder> controllerFunctionHolders =
-                Arrays.asList(holder, holder1, holder2, holder3, holder4, holder5, holder6, holder7, holder8, holder9, holder10);
+                Arrays.asList(login, allSeances, createSeance, deleteSeance, allSeancesForAdmin, registerUser,
+                        allSeancesForClient, createTicket, allTicketsByUserId, filterSeanceForUser);
 
         RequestHandler requestHandler = new RequestHandler(controllerFunctionHolders, exceptionHandler, controllerNotFoundResponseSupplier);
         ResponseHandler<ModelAndView> responseHandler = new ModelAndViewHandler();

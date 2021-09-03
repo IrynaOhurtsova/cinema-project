@@ -31,12 +31,6 @@
                               <input type="submit" value="delete">
                     </form>
    				</td>
-   				<td>
-                   <form method="POST" action="/app/cinema/seance/attendance">
-                                <input type="hidden" name="seanceId" value="${seance.id}">
-                                <input type="submit" value="attendance">
-                   </form>
-                </td>
    			</tr>
    		</c:forEach>
    	</table>

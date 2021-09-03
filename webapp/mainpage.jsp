@@ -23,12 +23,6 @@
    				<td>${seance.price}</td>
    				<td>${seance.seatingCapacity}</td>
    				<td>${seance.freePlaces}</td>
-   				<td>
-                   <form method="POST" action="/app/cinema/seance/freeplaces">
-                        <input type="hidden" name="seanceId" value="${seance.id}">
-                        <input type="submit" value="free places">
-                    </form>
-                </td>
    			</tr>
    		</c:forEach>
    	</table>

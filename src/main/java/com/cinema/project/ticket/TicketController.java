@@ -2,6 +2,7 @@ package com.cinema.project.ticket;
 
 import com.cinema.project.infra.web.QueryValueResolver;
 import com.cinema.project.infra.web.response.ModelAndView;
+import com.cinema.project.seance.SeanceWithMovieTitleDto;
 import com.cinema.project.user.User;
 import lombok.RequiredArgsConstructor;
 
@@ -36,11 +37,13 @@ public class TicketController {
         return modelAndView;
     }
 
-    public ModelAndView getFreePlacesForSeance(HttpServletRequest request) {
-        TicketCreateDto ticketCreateDto = queryValueResolver.getObject(request, TicketCreateDto.class);
-        int freePlacesForSeance = ticketService.getFreePlacesForSeance(ticketCreateDto.getSeanceId());
-        ModelAndView modelAndView = ModelAndView.withView("/seance/freeplaces.jsp");
-        modelAndView.addAttribute("freePlaces", freePlacesForSeance);
+    public ModelAndView getSeancesForUserByTickets(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        List<SeanceWithMovieTitleDto> seances = ticketService.getSeanceForUserByTickets(user);
+        session.setAttribute("seances", seances);
+        ModelAndView modelAndView = ModelAndView.withView("/mainpagewithbuying.jsp");
+        modelAndView.setRedirect(true);
         return modelAndView;
     }
 

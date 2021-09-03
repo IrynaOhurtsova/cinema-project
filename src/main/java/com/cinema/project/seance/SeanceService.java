@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -49,7 +48,7 @@ public class SeanceService {
         Map<Long, Movie> moviesById = movieService.getMoviesById(moviesId);
 
         return seances.stream()
-                .collect(Collectors.toMap(seance -> seance.getId(),
+                .collect(Collectors.toMap(Seance::getId,
                         seance -> new SeanceWithMovieTitleDto(seance, moviesById.get(seance.getMovieId()))));
     }
 
