@@ -19,6 +19,8 @@
               <input type="text" id="price" name="price" value="50">
               <label for="seating_capacity">seating_capacity</label>
               <input type="text" id="seatingCapacity" name="seatingCapacity" value="300">
+              <label for="free_places">free_places</label>
+              <input type="text" id="freePlaces" name="freePlaces" value="300">
               <input type="submit" value="create">
          </form>
     </body>

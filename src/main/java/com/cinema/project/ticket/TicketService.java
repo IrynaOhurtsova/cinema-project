@@ -16,13 +16,13 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final TicketCreateValidator ticketCreateValidator;
     private final SeanceService seanceService;
-    private final SeanceRepository seanceRepository;
 
-    public Ticket createTicket(TicketBuyingDto ticketBuyingDto, User user) {
+    public Ticket createTicket(TicketCreateDto ticketCreateDto, User user) {
         Ticket ticket = new Ticket();
-        ticket.setSeanceId(ticketBuyingDto.getId());
+        ticket.setSeanceId(ticketCreateDto.getSeanceId());
         ticket.setUserId(user.getId());
-        return ticketRepository.createTicket(ticketCreateValidator.validate(ticket));
+        return ticketRepository.createTicket(ticketCreateValidator.validate(ticket))
+                .orElseThrow(TicketCreateException::new);
     }
 
     public List<TicketWithSeanceDto> getTicketsForUser(User user) {
@@ -38,29 +38,21 @@ public class TicketService {
 
     }
 
-
     //create validator or not? checkFreePlaces in createTicket, so here negativ free places can't be
     //where the method should be?
     public int getFreePlacesForSeance(Long seanceId) {
-        if (!seanceRepository.findSeanceByID(seanceId).isPresent()) {
-            throw new SeanceExistException("seance doesn't exist");
-        }
+        Seance seanceById = seanceService.getSeanceById(seanceId);
         int seatingCapacity = ticketCreateValidator.getSeanceCreateValidatorConfig().getMaxSeatingCapacity();
         return seatingCapacity - ticketRepository.getTicketsBySeanceId(seanceId).size();
     }
 
     public int getAttendance(Long seanceId) {
-        if (!seanceRepository.findSeanceByID(seanceId).isPresent()) {
-            throw new SeanceExistException("seance doesn't exist");
-        }
+        Seance seanceById = seanceService.getSeanceById(seanceId);
         return ticketRepository.getTicketsBySeanceId(seanceId).size();
     }
 
     public Map<Long, ArrayList<Ticket>> getFreePlacesBySeancesIds(List<Long> ids) {
-        String paramIds = ids.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(", "));
-        List<Ticket> tickets = ticketRepository.getTicketsBySeancesIds(paramIds);
+        List<Ticket> tickets = ticketRepository.getTicketsBySeancesIds(ids);
         Map<Long, ArrayList<Ticket>> map = new HashMap<>();
         ids.forEach(id->map.put(id,new ArrayList<>()));
         tickets.forEach(ticket -> map.get(ticket.getSeanceId()).add(ticket));

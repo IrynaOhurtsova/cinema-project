@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -40,22 +41,21 @@ public class SeanceService {
     }
 
     public Map<Long, SeanceWithMovieTitleDto> getSeancesByIds(List<Long> ids) {
-        String idsParam = ids.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(", "));
-        List<Seance> seances = seanceRepository.getSeancesByIds(idsParam);
-
-        // two way for transfer arguments - list ids and string ids
+        List<Seance> seances = seanceRepository.getSeancesByIds(ids);
 
         List<Long> moviesId = seances.stream()
                 .map(Seance::getMovieId)
                 .collect(Collectors.toList());
         Map<Long, Movie> moviesById = movieService.getMoviesById(moviesId);
 
-
         return seances.stream()
                 .collect(Collectors.toMap(seance -> seance.getId(),
                         seance -> new SeanceWithMovieTitleDto(seance, moviesById.get(seance.getMovieId()))));
+    }
+
+    public Seance getSeanceById(Long id) {
+        return seanceRepository.findSeanceByID(id)
+                .orElseThrow(()->new SeanceExistException("seance doesn't exist"));
     }
 
 }

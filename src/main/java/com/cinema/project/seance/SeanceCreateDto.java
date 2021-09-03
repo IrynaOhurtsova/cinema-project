@@ -13,5 +13,5 @@ public class SeanceCreateDto {
     String title;
     Double price;
     Integer seatingCapacity;
-
+    Integer freePlaces;
 }

@@ -18,4 +18,5 @@ public class Seance {
     private Long movieId;
     private Double price;
     private Integer seatingCapacity;
+    private Integer freePlaces;
 }

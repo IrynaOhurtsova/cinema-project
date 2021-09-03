@@ -10,6 +10,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class SeanceRepository {
@@ -29,7 +30,8 @@ public class SeanceRepository {
                         resultSet.getTime("time").toLocalTime(),
                         resultSet.getLong("movie_id"),
                         resultSet.getDouble("price"),
-                        resultSet.getInt("seating_capacity")));
+                        resultSet.getInt("seating_capacity"),
+                        resultSet.getInt("free_Places")));
             }
             return seances;
         }
@@ -37,7 +39,8 @@ public class SeanceRepository {
 
     @SneakyThrows
     public Seance createSeance(Seance seance) {
-        String sql_query = "INSERT INTO seance (date, time, movie_id, price, seating_capacity) VALUES (?, ?, ?, ?, ?)";
+        String sql_query = "INSERT INTO seance (date, time, movie_id, price, seating_capacity, free_places) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql_query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setDate(1, Date.valueOf(seance.getDate()));
@@ -45,6 +48,7 @@ public class SeanceRepository {
             preparedStatement.setLong(3, seance.getMovieId());
             preparedStatement.setDouble(4, seance.getPrice());
             preparedStatement.setInt(5, seance.getSeatingCapacity());
+            preparedStatement.setInt(6, seance.getFreePlaces());
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
@@ -68,7 +72,8 @@ public class SeanceRepository {
                         resultSet.getTime("time").toLocalTime(),
                         resultSet.getLong("movie_id"),
                         resultSet.getDouble("price"),
-                        resultSet.getInt("seating_capacity")));
+                        resultSet.getInt("seating_capacity"),
+                        resultSet.getInt("free_Places")));
             }
         }
         return Optional.empty();
@@ -87,7 +92,8 @@ public class SeanceRepository {
                         resultSet.getTime("time").toLocalTime(),
                         resultSet.getLong("movie_id"),
                         resultSet.getDouble("price"),
-                        resultSet.getInt("seating_capacity")));
+                        resultSet.getInt("seating_capacity"),
+                        resultSet.getInt("free_Places")));
             }
         }
         return Optional.empty();
@@ -105,19 +111,23 @@ public class SeanceRepository {
     }
 
     @SneakyThrows
-    public List<Seance> getSeancesByIds(String ids) {
+    public List<Seance> getSeancesByIds(List<Long> ids) {
         String sql_query = "SELECT * FROM seance WHERE id IN (%s)";
         List<Seance> seances = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(String.format(sql_query,ids));
+            String idsParam = ids.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(", "));
+            ResultSet resultSet = statement.executeQuery(String.format(sql_query,idsParam));
             while (resultSet.next()) {
                 seances.add(new Seance((resultSet.getLong("id")),
                         resultSet.getDate("date").toLocalDate(),
                         resultSet.getTime("time").toLocalTime(),
                         resultSet.getLong("movie_id"),
                         resultSet.getDouble("price"),
-                        resultSet.getInt("seating_capacity")));
+                        resultSet.getInt("seating_capacity"),
+                        resultSet.getInt("free_places")));
             }
             return seances;
         }

@@ -36,7 +36,7 @@ import java.util.function.Supplier;
 public class ApplicationServletContainerInitializer implements ServletContainerInitializer {
 
     @Override
-    public void onStartup(Set<Class<?>> c, ServletContext ctx) throws ServletException {
+    public void onStartup(Set<Class<?>> c, ServletContext ctx) {
         FrontServlet frontServlet = buildApplication();
         ServletRegistration.Dynamic registration = ctx.addServlet("front", frontServlet);
         registration.setLoadOnStartup(1);
@@ -67,7 +67,7 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
 
         //seance
         SeanceRepository seanceRepository = new SeanceRepository(dataSource);
-        SeanceCreateValidatorConfig seanceCreateValidatorConfig = new SeanceCreateValidatorConfig(5, LocalTime.of(9, 0), LocalTime.of(22, 0));
+        SeanceCreateValidatorConfig seanceCreateValidatorConfig = new SeanceCreateValidatorConfig(300, LocalTime.of(9, 0), LocalTime.of(22, 0));
         SeanceCreateValidator seanceCreateValidator = new SeanceCreateValidator(seanceRepository, seanceCreateValidatorConfig);
         SeanceCreateDtoToSeanceMapper seanceCreateDtoToSeanceMapper = new SeanceCreateDtoToSeanceMapper(movieService);
         SeanceService seanceService = new SeanceService(seanceRepository, movieService, seanceCreateValidator, seanceCreateDtoToSeanceMapper);
@@ -76,7 +76,7 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         //ticket
         TicketRepository ticketRepository = new TicketRepository(dataSource);
         TicketCreateValidator ticketCreateValidator = new TicketCreateValidator(ticketRepository, seanceRepository, seanceCreateValidatorConfig);
-        TicketService ticketService = new TicketService(ticketRepository, ticketCreateValidator, seanceService, seanceRepository);
+        TicketService ticketService = new TicketService(ticketRepository, ticketCreateValidator, seanceService);
         TicketController ticketController = new TicketController(ticketService, queryValueResolver);
 
         //web

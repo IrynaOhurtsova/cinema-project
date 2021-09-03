@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -17,10 +16,10 @@ public class TicketController {
     private final QueryValueResolver queryValueResolver;
 
     public ModelAndView createTicket(HttpServletRequest request) {
-        TicketBuyingDto ticketBuyingDto = queryValueResolver.getObject(request, TicketBuyingDto.class);
+        TicketCreateDto ticketCreateDto = queryValueResolver.getObject(request, TicketCreateDto.class);
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        Ticket ticket = ticketService.createTicket(ticketBuyingDto, user);
+        Ticket ticket = ticketService.createTicket(ticketCreateDto, user);
         session.setAttribute("ticket", ticket);
         ModelAndView modelAndView = ModelAndView.withView("/ticket/buyinghasdone.jsp");
         modelAndView.setRedirect(true);
@@ -38,16 +37,16 @@ public class TicketController {
     }
 
     public ModelAndView getFreePlacesForSeance(HttpServletRequest request) {
-        TicketBuyingDto ticketBuyingDto = queryValueResolver.getObject(request, TicketBuyingDto.class);
-        int freePlacesForSeance = ticketService.getFreePlacesForSeance(ticketBuyingDto.getId());
+        TicketCreateDto ticketCreateDto = queryValueResolver.getObject(request, TicketCreateDto.class);
+        int freePlacesForSeance = ticketService.getFreePlacesForSeance(ticketCreateDto.getSeanceId());
         ModelAndView modelAndView = ModelAndView.withView("/seance/freeplaces.jsp");
         modelAndView.addAttribute("freePlaces", freePlacesForSeance);
         return modelAndView;
     }
 
     public ModelAndView getAttendance(HttpServletRequest request) {
-        TicketBuyingDto ticketBuyingDto = queryValueResolver.getObject(request, TicketBuyingDto.class);
-        int attendance = ticketService.getAttendance(ticketBuyingDto.getId());
+        TicketCreateDto ticketCreateDto = queryValueResolver.getObject(request, TicketCreateDto.class);
+        int attendance = ticketService.getAttendance(ticketCreateDto.getSeanceId());
         HttpSession session = request.getSession();
         session.setAttribute("attendance", attendance);
         ModelAndView modelAndView = ModelAndView.withView("/seance/attendance.jsp");

@@ -17,6 +17,7 @@ public class SeanceCreateDtoToSeanceMapper {
                 .movieId(movie.getId())
                 .price(seanceCreateDto.getPrice())
                 .seatingCapacity(seanceCreateDto.getSeatingCapacity())
+                .freePlaces(seanceCreateDto.getFreePlaces())
                 .build();
     }
 }

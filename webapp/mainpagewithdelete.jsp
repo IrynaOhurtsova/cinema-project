@@ -13,6 +13,8 @@
             <th>TITLE</th>
             <th>PRICE</th>
             <th>SEATING CAPACITY</th>
+            <th>FREE PLACES</th>
+            <th>SOLD TICKETS</th>
         </tr>
         <c:forEach var="seance" items="${seances}">
    			<tr>
@@ -21,15 +23,17 @@
    				<td>${seance.movie.title}</td>
    				<td>${seance.price}</td>
    				<td>${seance.seatingCapacity}</td>
+   				<td>${seance.freePlaces}</td>
+   				<td>${seance.seatingCapacity - seance.freePlaces}</td>
    				<td>
    				    <form method="POST" action="/app/cinema/seance/delete">
-                              <input type="hidden" name="id" value="${seance.id}">
+                              <input type="hidden" name="seanceId" value="${seance.id}">
                               <input type="submit" value="delete">
                     </form>
    				</td>
    				<td>
                    <form method="POST" action="/app/cinema/seance/attendance">
-                                <input type="hidden" name="id" value="${seance.id}">
+                                <input type="hidden" name="seanceId" value="${seance.id}">
                                 <input type="submit" value="attendance">
                    </form>
                 </td>

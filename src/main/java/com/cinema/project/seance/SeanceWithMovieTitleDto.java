@@ -14,6 +14,7 @@ public class SeanceWithMovieTitleDto {
     LocalTime time;
     Double price;
     Integer seatingCapacity;
+    Integer freePlaces;
     Movie movie;
 
     public SeanceWithMovieTitleDto(Seance seance, Movie movie) {
@@ -22,6 +23,7 @@ public class SeanceWithMovieTitleDto {
         time = seance.getTime();
         price = seance.getPrice();
         seatingCapacity = seance.getSeatingCapacity();
+        freePlaces = seance.getFreePlaces();
         this.movie = movie;
     }
 }
