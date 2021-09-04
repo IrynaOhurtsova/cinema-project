@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Cinema</title>
+        <title>My tickets</title>
         <meta charset="UTF-8">
     </head>
     <body>

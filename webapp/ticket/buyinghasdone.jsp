@@ -2,18 +2,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Buying has done</title>
+        <title>Buying</title>
         <meta charset="UTF-8">
     </head>
     <body>
         <p>
             Thank You for buying!
         </p>
-        <a href="/app/cinema/buyticket">
+        <p><a href="/app/cinema/buyticket">
             Schedule of films
-        </a>
-        <a href="/app/cinema/ticket/mytickets">
+        </p></a>
+        <p><a href="/app/cinema/ticket/mytickets">
             My tickets
-        </a>
+        </p></a>
     </body>
 </html>

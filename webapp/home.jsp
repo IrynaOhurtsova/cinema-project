@@ -2,15 +2,19 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>JSP file</title>
+        <title>Home</title>
         <meta charset="UTF-8">
     </head>
     <body>
         <p>
             Welcome to home page, ${user.login}
         </p>
-        <a href="/app/cinema/buyticket">
+
+        <p><a href="/app/cinema/buyticket">
             Schedule of films
-        </a>
+        </p></a>
+        <p><a href="/app/cinema/ticket/mytickets">
+            My tickets
+        </p></a>
     </body>
 </html

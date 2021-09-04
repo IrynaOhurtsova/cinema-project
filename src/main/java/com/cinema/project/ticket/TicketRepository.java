@@ -15,39 +15,25 @@ public class TicketRepository {
 
     private final DataSource dataSource;
 
-
-    public Optional<Ticket> createTicket(Ticket ticket) {
+    @SneakyThrows
+    public Ticket createTicket(Ticket ticket) {
         String sql_insert = "INSERT INTO ticket (user_id, seance_id) VALUES (?, ?)";
         String sql_update = "UPDATE seance SET free_places=free_places-1 WHERE id=?";
-        Connection connection = null;
-        PreparedStatement preparedStatementInsert = null;
-        PreparedStatement preparedStatementUpdate = null;
-        try {
-            connection = dataSource.getConnection();
-            preparedStatementInsert = connection.prepareStatement(sql_insert, Statement.RETURN_GENERATED_KEYS);
-            preparedStatementUpdate = connection.prepareStatement(sql_update);
-
+        Connection connection = dataSource.getConnection();
+        try (PreparedStatement preparedStatementInsert = connection.prepareStatement(sql_insert, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement preparedStatementUpdate = connection.prepareStatement(sql_update)) {
             connection.setAutoCommit(false);
-
             insertTicket(preparedStatementInsert, ticket);
-
             updateFreePlaces(preparedStatementUpdate, ticket);
-
             connection.commit();
-            connection.setAutoCommit(true);
-
-            return Optional.of(ticket);
-
+            return ticket;
         } catch (SQLException exception) {
-            rollback(connection);
-
+            connection.rollback();
+            throw exception;
         } finally {
-            close(preparedStatementInsert);
-            close(preparedStatementUpdate);
-            close(connection);
+            connection.close();
 
         }
-        return Optional.empty();
     }
 
     private void insertTicket(PreparedStatement preparedStatement, Ticket ticket) throws SQLException {
@@ -62,26 +48,6 @@ public class TicketRepository {
     private void updateFreePlaces(PreparedStatement preparedStatement, Ticket ticket) throws SQLException {
         preparedStatement.setLong(1, ticket.getSeanceId());
         preparedStatement.executeUpdate();
-    }
-
-    private void close(AutoCloseable autoCloseable) {
-        if (autoCloseable != null) {
-            try {
-                autoCloseable.close();
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        }
-    }
-
-    private void rollback(Connection connection) {
-        try {
-            if (connection != null) {
-                connection.rollback();
-            }
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-        }
     }
 
     @SneakyThrows

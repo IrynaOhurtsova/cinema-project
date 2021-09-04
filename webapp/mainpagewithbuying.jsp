@@ -6,11 +6,45 @@
         <meta charset="UTF-8">
     </head>
     <body>
+    <select onchange="sortTable(value)">
+    <option value=0 >SORT DATE</option>
+    <option value=2 >SORT TITLE</option>
+    <option value=3 >SORT PRICE</option>
+    <option value=5 >SORT FREE PLACES</option>
+    </select>
     <button onclick="sortTable(0)">SORT DATE</button>
     <button onclick="sortTable(2)">SORT TITLE</button>
     <button onclick="sortTable(3)">SORT PRICE</button>
     <button onclick="sortTable(5)">SORT FREE PLACES</button>
+    <form method="POST" action="/app/cinema/seance/available">
+        <button>AVAILABLE SEANCES</button>
+    </form>
 
+
+<style>
+table {
+font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+font-size: 14px;
+border-collapse: collapse;
+text-align: center;
+}
+th, td:first-child {
+background: #AFCDE7;
+color: white;
+padding: 10px 20px;
+}
+th, td {
+border-style: solid;
+border-width: 0 1px 1px 0;
+border-color: white;
+}
+td {
+background: #D8E6F3;
+}
+th:first-child, td:first-child {
+text-align: left;
+}
+</style>
    <table id="myTable">
         <tr>
             <th>DATE</th>
@@ -19,6 +53,7 @@
             <th>PRICE</th>
             <th>SEATING CAPACITY</th>
             <th>FREE PLACES</th>
+            <th>BUY</th>
         </tr>
         <c:forEach var="seance" items="${seances}">
    			<tr>
@@ -37,10 +72,6 @@
    			</tr>
    		</c:forEach>
    	</table>
-    <form method="POST" action="/app/cinema/seance/available">
-
-         <input type="submit" value="AVAILABLE SEANCES">
-    </form>
     </body>
 </html>
 
@@ -98,20 +129,5 @@ function sortTable(n) {
       }
     }
   }
-}
-</script>
-
-<script>
-const myFunction = () => {
-  const trs = document.querySelectorAll('#myTable tr:not(.header)');
-  const filter = document.querySelector('#myInput').value;
-  const regex = new RegExp(filter, 'i');
-  const isFoundInTds = (td) => regex.test(td.innerHTML);
-  const isFound = (childrenArr) => childrenArr.some(isFoundInTds);
-  const setTrStyleDisplay = ({ style, children }) => {
-    style.display = isFound([...children]) ? '' : 'none';
-  };
-
-  trs.forEach(setTrStyleDisplay);
 }
 </script>

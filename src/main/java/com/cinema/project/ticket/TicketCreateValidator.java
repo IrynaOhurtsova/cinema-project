@@ -1,29 +1,19 @@
 package com.cinema.project.ticket;
 
 import com.cinema.project.seance.Seance;
-import com.cinema.project.seance.SeanceExistException;
-import com.cinema.project.seance.SeanceRepository;
-import lombok.Getter;
+import com.cinema.project.seance.SeanceService;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
-
 @RequiredArgsConstructor
-@Getter
 public class TicketCreateValidator {
 
-    private final SeanceRepository seanceRepository;
+    private final SeanceService seanceService;
 
     public Ticket validate(Ticket ticket) {
-        Optional<Seance> seanceByID = seanceRepository.findSeanceByID(ticket.getSeanceId());
-
-        if (!seanceByID.isPresent()) {
-            throw new SeanceExistException("seance doesn't exist");
-        }
-        if (seanceByID.get().getFreePlaces() == 0) {
+        Seance seance = seanceService.getSeanceById(ticket.getSeanceId());
+        if (seance.getFreePlaces() == 0) {
             throw new TicketCreateException();
         }
         return ticket;
     }
-
 }

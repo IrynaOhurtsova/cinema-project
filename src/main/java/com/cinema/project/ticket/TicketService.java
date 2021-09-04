@@ -18,15 +18,11 @@ public class TicketService {
         Ticket ticket = new Ticket();
         ticket.setSeanceId(ticketCreateDto.getSeanceId());
         ticket.setUserId(user.getId());
-        return ticketRepository.createTicket(ticketCreateValidator.validate(ticket))
-                .orElseThrow(TicketCreateException::new);
+        return ticketRepository.createTicket(ticketCreateValidator.validate(ticket));
     }
 
     public List<TicketWithSeanceDto> getTicketsForUser(User user) {
         List<Ticket> tickets = ticketRepository.getTicketsByUserId(user.getId());
-        if (tickets.size() == 0) {
-            throw new TicketExistException("You don't have any tickets");
-        }
         List<Long> ids = tickets.stream()
                 .map(Ticket::getSeanceId)
                 .collect(Collectors.toList());
@@ -39,17 +35,13 @@ public class TicketService {
     }
 
     public List<SeanceWithMovieTitleDto> getSeanceForUserByTickets(User user) {
-        List<Ticket> tickets = ticketRepository.getTicketsByUserId(user.getId());
-        if (tickets.size() == 0) {
-            throw new TicketExistException("You don't have any tickets");
-        }
-        List<Long> ids = tickets.stream()
+        List<Long> seanceIds = ticketRepository.getTicketsByUserId(user.getId())
+                .stream()
                 .map(Ticket::getSeanceId)
                 .distinct()
                 .collect(Collectors.toList());
-        Map<Long, SeanceWithMovieTitleDto> seancesByIds = seanceService.getSeancesByIds(ids);
-        Collection<SeanceWithMovieTitleDto> values = seancesByIds.values();
-        return new ArrayList<>(values);
+        Map<Long, SeanceWithMovieTitleDto> seancesByIds = seanceService.getSeancesByIds(seanceIds);
+        return new ArrayList<>(seancesByIds.values());
     }
 
     public int getAttendance(Long seanceId) {

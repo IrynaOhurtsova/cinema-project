@@ -36,7 +36,7 @@ public class SeanceService {
 
     public Seance deleteSeanceById(Long id) {
         return seanceRepository.deleteSeanceById(seanceRepository.findSeanceByID(id)
-                .orElseThrow(() -> new SeanceExistException("seance doesn't exist")));
+                .orElseThrow(() -> new SeanceNotFoundException("seance doesn't exist")));
     }
 
     public Map<Long, SeanceWithMovieTitleDto> getSeancesByIds(List<Long> ids) {
@@ -54,7 +54,7 @@ public class SeanceService {
 
     public Seance getSeanceById(Long id) {
         return seanceRepository.findSeanceByID(id)
-                .orElseThrow(()->new SeanceExistException("seance doesn't exist"));
+                .orElseThrow(()->new SeanceNotFoundException("seance doesn't exist"));
     }
 
 }

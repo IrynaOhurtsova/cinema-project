@@ -75,7 +75,7 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
 
         //ticket
         TicketRepository ticketRepository = new TicketRepository(dataSource);
-        TicketCreateValidator ticketCreateValidator = new TicketCreateValidator(seanceRepository);
+        TicketCreateValidator ticketCreateValidator = new TicketCreateValidator(seanceService);
         TicketService ticketService = new TicketService(ticketRepository, ticketCreateValidator, seanceService);
         TicketController ticketController = new TicketController(ticketService, queryValueResolver);
 

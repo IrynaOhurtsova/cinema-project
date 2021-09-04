@@ -9,7 +9,7 @@
         <p>
             New seance created on ${seance.date} at ${seance.time}
         </p>
-        <a href="/app/cinema/mainpage">
+        <a href="/app/cinema/mainpagewithdelete">
             Schedule of films
         </a>
     </body>

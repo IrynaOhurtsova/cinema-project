@@ -46,7 +46,7 @@ public class SeanceController {
     }
 
     public ModelAndView delete(HttpServletRequest request) {
-        String id = request.getParameter("id");
+        String id = request.getParameter("seanceId");
         Seance seance = seanceService.deleteSeanceById(Long.valueOf(id));
         HttpSession session = request.getSession();
         session.setAttribute("seance", seance);

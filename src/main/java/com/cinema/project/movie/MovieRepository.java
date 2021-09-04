@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,6 +37,9 @@ public class MovieRepository {
 
     @SneakyThrows
     public List<Movie> getMoviesById(List<Long> ids) {
+        if(ids.isEmpty()){
+            return Collections.emptyList();
+        }
         String sql_query = "SELECT * FROM movie WHERE id IN (%s)";
         String idsParam = ids.stream()
                 .map(String::valueOf)

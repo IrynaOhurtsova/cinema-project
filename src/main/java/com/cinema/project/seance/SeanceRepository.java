@@ -8,6 +8,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -112,6 +113,9 @@ public class SeanceRepository {
 
     @SneakyThrows
     public List<Seance> getSeancesByIds(List<Long> ids) {
+        if(ids.isEmpty()) {
+            return Collections.emptyList();
+        }
         String sql_query = "SELECT * FROM seance WHERE id IN (%s)";
         List<Seance> seances = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
