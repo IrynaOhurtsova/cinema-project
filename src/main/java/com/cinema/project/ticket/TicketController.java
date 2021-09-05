@@ -42,7 +42,7 @@ public class TicketController {
         User user = (User) session.getAttribute("user");
         List<SeanceWithMovieTitleDto> seances = ticketService.getSeanceForUserByTickets(user);
         session.setAttribute("seances", seances);
-        ModelAndView modelAndView = ModelAndView.withView("/mainpagewithbuying.jsp");
+        ModelAndView modelAndView = ModelAndView.withView("/mainpageforclient.jsp");
         modelAndView.setRedirect(true);
         return modelAndView;
     }

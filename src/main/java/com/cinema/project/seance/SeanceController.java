@@ -23,14 +23,14 @@ public class SeanceController {
 
     public ModelAndView allSeancesWithDelete() {
         List<SeanceWithMovieTitleDto> seances = seanceService.getAllSeances();
-        ModelAndView modelAndView = ModelAndView.withView("/mainpagewithdelete.jsp");
+        ModelAndView modelAndView = ModelAndView.withView("/mainpageforadmin.jsp");
         modelAndView.addAttribute("seances", seances);
         return modelAndView;
     }
 
     public ModelAndView allSeancesWithBuying() {
         List<SeanceWithMovieTitleDto> seances = seanceService.getAllSeances();
-        ModelAndView modelAndView = ModelAndView.withView("/mainpagewithbuying.jsp");
+        ModelAndView modelAndView = ModelAndView.withView("/mainpageforclient.jsp");
         modelAndView.addAttribute("seances", seances);
         return modelAndView;
     }

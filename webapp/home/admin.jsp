@@ -10,11 +10,11 @@
             Welcome to home page, ${user.login}
         </p>
 
-        <p><a href="/app/cinema/buyticket">
+        <p><a href="/app/cinema/mainpageforadmin">
             Schedule of films
         </p></a>
-        <p><a href="/app/cinema/ticket/mytickets">
-            My tickets
+        <p><a href="/app/seance/createnewseance.jsp">
+            Create seance
         </p></a>
     </body>
 </html

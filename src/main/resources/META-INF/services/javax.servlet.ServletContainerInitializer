@@ -1,1 +1,2 @@
 com.cinema.project.infra.web.ApplicationServletContainerInitializer
+com.cinema.project.infra.auth.AuthorizationServletContainerInitializer

@@ -24,13 +24,10 @@ import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.sql.DataSource;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class ApplicationServletContainerInitializer implements ServletContainerInitializer {
@@ -58,7 +55,10 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         ClientRegisterValidator clientRegisterValidator = new ClientRegisterValidator(userRepository);
         UserLoginRequestDtoToClientMapper userLoginRequestDtoToClientMapper = new UserLoginRequestDtoToClientMapper();
         UserService userService = new UserService(userRepository, userLoginRequestDtoToClientMapper, clientRegisterValidator);
-        UserController userController = new UserController(userService, queryValueResolver);
+        Map<UserRole, ModelAndView> modelAndViewHome = new HashMap<>();
+        modelAndViewHome.put(UserRole.CLIENT, ModelAndView.withView("/home/client.jsp"));
+        modelAndViewHome.put(UserRole.ADMIN, ModelAndView.withView("/home/admin.jsp"));
+        UserController userController = new UserController(userService, queryValueResolver, modelAndViewHome);
 
         //movie
         MovieRepository movieRepository = new MovieRepository(dataSource);
@@ -94,11 +94,11 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         ControllerFunctionHolder deleteSeance =
                 new ControllerFunctionHolder("/seance/delete", "POST", seanceController::delete);
         ControllerFunctionHolder allSeancesForAdmin =
-                new ControllerFunctionHolder("/mainpagewithdelete", "GET", request -> seanceController.allSeancesWithDelete());
+                new ControllerFunctionHolder("/mainpageforadmin", "GET", request -> seanceController.allSeancesWithDelete());
         ControllerFunctionHolder registerUser =
                 new ControllerFunctionHolder("/user/register", "POST", userController::registerUser);
         ControllerFunctionHolder allSeancesForClient =
-                new ControllerFunctionHolder("/buyticket", "GET", request -> seanceController.allSeancesWithBuying());
+                new ControllerFunctionHolder("/mainpageforclient", "GET", request -> seanceController.allSeancesWithBuying());
         ControllerFunctionHolder createTicket =
                 new ControllerFunctionHolder("/ticket/buy", "POST", ticketController::createTicket);
         ControllerFunctionHolder allTicketsByUserId =
