@@ -1,5 +1,7 @@
 package com.cinema.project.infra.auth;
 
+import com.cinema.project.infra.web.listener.LocaleSessionListenerConfiguration;
+
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
@@ -10,6 +12,6 @@ public class AuthorizationServletContainerInitializer implements ServletContaine
     public void onStartup(Set<Class<?>> c, ServletContext ctx) {
         AuthConfiguration authConfiguration = new AuthConfiguration();
         FilterRegistration.Dynamic auth = ctx.addFilter("auth", authConfiguration.authorizationFilter());
-        auth.addMappingForUrlPatterns(null, false, "/*");//"/*" - filter calls everywhere?
+        auth.addMappingForUrlPatterns(null, false, "/*");
     }
 }

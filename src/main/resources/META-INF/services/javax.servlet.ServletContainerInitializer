@@ -1,2 +1,3 @@
 com.cinema.project.infra.web.ApplicationServletContainerInitializer
 com.cinema.project.infra.auth.AuthorizationServletContainerInitializer
+com.cinema.project.infra.web.listener.ListenerServletContainerInitializer

@@ -1,9 +1,11 @@
 package com.cinema.project.infra.web;
 
+import com.cinema.project.infra.web.listener.*;
 import com.cinema.project.infra.config.ConfigLoader;
 import com.cinema.project.infra.db.DataSourceConfig;
 import com.cinema.project.infra.web.exeption.handler.ExceptionHandler;
 import com.cinema.project.infra.web.exeption.handler.ExceptionHandlerConfig;
+import com.cinema.project.infra.web.listener.LocaleSessionListenerConfiguration;
 import com.cinema.project.infra.web.request.ControllerFunctionHolder;
 import com.cinema.project.infra.web.request.RequestHandler;
 import com.cinema.project.infra.web.response.ModelAndView;
@@ -105,9 +107,11 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
                 new ControllerFunctionHolder("/ticket/mytickets", "GET", ticketController::getAllTicketsByUserId);
         ControllerFunctionHolder filterSeanceForUser =
                 new ControllerFunctionHolder("/seance/available", "POST", ticketController::getSeancesForUserByTickets);
+        ControllerFunctionHolder changeLocale =
+                new ControllerFunctionHolder("/user/change/language", "POST", userController::changeLocale);
         List<ControllerFunctionHolder> controllerFunctionHolders =
                 Arrays.asList(login, allSeances, createSeance, deleteSeance, allSeancesForAdmin, registerUser,
-                        allSeancesForClient, createTicket, allTicketsByUserId, filterSeanceForUser);
+                        allSeancesForClient, createTicket, allTicketsByUserId, filterSeanceForUser, changeLocale);
 
         RequestHandler requestHandler = new RequestHandler(controllerFunctionHolders, exceptionHandler, controllerNotFoundResponseSupplier);
         ResponseHandler<ModelAndView> responseHandler = new ModelAndViewHandler();

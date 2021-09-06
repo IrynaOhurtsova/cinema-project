@@ -1,3 +1,6 @@
+<%@taglib uri="/WEB-INF/tag/language.tld" prefix="lang" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -7,7 +10,7 @@
     <body>
     <form method="POST" action="/app/cinema/user/login">
       <div class="container">
-        <label for="login"><b>Login</b></label>
+        <label for="login"><b><lang:print>Login</lang:print></b></label>
         <input type="text" placeholder="Enter login" name="login" required>
 
         <label for="password"><b>Password</b></label>
@@ -22,6 +25,18 @@
        <form method="GET" action="/app/registeruser.jsp">
             <button type="submit">Sign up</button>
         </form>
+
+       <form action="/app/cinema/user/change/language" method="POST">
+          <input type="hidden" name="view" value=""/>
+                   <select name="selectedLocale">
+                           <c:forEach var="locale" items="${sessionScope.locales}">
+                               <option value="${locale}">
+                                   ${locale}
+                               </option>
+                           </c:forEach>
+                   </select>
+          <input type="submit" value="change">
+      </form>
 
       </div>
       <style>
