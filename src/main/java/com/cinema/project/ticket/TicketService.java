@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 public class TicketService {
@@ -14,19 +15,19 @@ public class TicketService {
     private final TicketCreateValidator ticketCreateValidator;
     private final SeanceService seanceService;
 
-    public Ticket createTicket(TicketCreateDto ticketCreateDto, User user) {
+    public Ticket createTicket(Long seanceId, User user) {
         Ticket ticket = new Ticket();
-        ticket.setSeanceId(ticketCreateDto.getSeanceId());
+        ticket.setSeanceId(seanceId);
         ticket.setUserId(user.getId());
         return ticketRepository.createTicket(ticketCreateValidator.validate(ticket));
     }
 
-    public List<TicketWithSeanceDto> getTicketsForUser(User user) {
+    public List<TicketWithSeanceDto> getTicketsForUser(User user, Locale locale) {
         List<Ticket> tickets = ticketRepository.getTicketsByUserId(user.getId());
         List<Long> ids = tickets.stream()
                 .map(Ticket::getSeanceId)
                 .collect(Collectors.toList());
-        Map<Long, SeanceWithMovieTitleDto> seancesByIds = seanceService.getSeancesByIds(ids);
+        Map<Long, SeanceWithMovieTitleDto> seancesByIds = seanceService.getSeancesByIds(ids, locale);
 
         return tickets.stream()
                 .map(ticket -> new TicketWithSeanceDto(ticket, seancesByIds.get(ticket.getSeanceId())))
@@ -34,27 +35,29 @@ public class TicketService {
 
     }
 
-    public List<SeanceWithMovieTitleDto> getSeanceForUserByTickets(User user) {
-        List<Long> seanceIds = ticketRepository.getTicketsByUserId(user.getId())
+    public List<SeanceWithMovieTitleDto> getSeanceForUserByTickets(User user, Locale locale) {
+        List<Long> seanceIds = getSeancesIdsByTickets(user);
+        Map<Long, SeanceWithMovieTitleDto> seancesByIds = seanceService.getSeancesByIds(seanceIds, locale);
+        return new ArrayList<>(seancesByIds.values());
+    }
+
+    public List<SeanceWithMovieTitleDto> getSeancesPerPage(User user, String firstValue, Locale locale) {
+        return seanceService.getSeancesPerPageByIds(getSeancesIdsByTickets(user),firstValue, locale);
+    }
+
+    public Map<Integer, Integer> getPageAndFirstValue(User user, Locale locale) {
+        List<Seance> seancesByIds = seanceService.getSeancesByIds(getSeancesIdsByTickets(user));
+        return seanceService.findPageAndFirstValue(seancesByIds);
+    }
+
+    private List<Long> getSeancesIdsByTickets(User user) {
+        return ticketRepository.getTicketsByUserId(user.getId())
                 .stream()
                 .map(Ticket::getSeanceId)
                 .distinct()
                 .collect(Collectors.toList());
-        Map<Long, SeanceWithMovieTitleDto> seancesByIds = seanceService.getSeancesByIds(seanceIds);
-        return new ArrayList<>(seancesByIds.values());
     }
 
-    public int getAttendance(Long seanceId) {
-        Seance seanceById = seanceService.getSeanceById(seanceId);
-        return ticketRepository.getTicketsBySeanceId(seanceId).size();
-    }
 
-    public Map<Long, ArrayList<Ticket>> getFreePlacesBySeancesIds(List<Long> ids) {
-        List<Ticket> tickets = ticketRepository.getTicketsBySeancesIds(ids);
-        Map<Long, ArrayList<Ticket>> map = new HashMap<>();
-        ids.forEach(id->map.put(id,new ArrayList<>()));
-        tickets.forEach(ticket -> map.get(ticket.getSeanceId()).add(ticket));
-        return map;
-    }
 
 }

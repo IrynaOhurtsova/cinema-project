@@ -22,33 +22,7 @@
         <button><lang:print message="Available_seances"/></button>
     </form>
 
-
-<style>
-table {
-font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-font-size: 14px;
-border-collapse: collapse;
-text-align: center;
-}
-th, td:first-child {
-background: #AFCDE7;
-color: white;
-padding: 10px 20px;
-}
-th, td {
-border-style: solid;
-border-width: 0 1px 1px 0;
-border-color: white;
-}
-td {
-background: #D8E6F3;
-}
-th:first-child, td:first-child {
-text-align: left;
-}
-</style>
-
-    <form method="GET" action="/app/cinema/seance/page">
+    <form method="GET" action="/app/cinema/seance/available/page">
             <input class="page-item" type="hidden" name="value" value="0">
             <button class="page-link" type="submit"><lang:print message="Display_by"/></button>
     </form>
@@ -81,6 +55,31 @@ text-align: left;
    		</c:forEach>
    	</table>
 
+
+<style>
+table {
+font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+font-size: 14px;
+border-collapse: collapse;
+text-align: center;
+}
+th, td:first-child {
+background: #AFCDE7;
+color: white;
+padding: 10px 20px;
+}
+th, td {
+border-style: solid;
+border-width: 0 1px 1px 0;
+border-color: white;
+}
+td {
+background: #D8E6F3;
+}
+th:first-child, td:first-child {
+text-align: left;
+}
+</style>
     </body>
 </html>
 

@@ -1,17 +1,14 @@
 package com.cinema.project.infra.web;
 
-import com.cinema.project.infra.web.listener.*;
 import com.cinema.project.infra.config.ConfigLoader;
 import com.cinema.project.infra.db.DataSourceConfig;
 import com.cinema.project.infra.web.exeption.handler.ExceptionHandler;
 import com.cinema.project.infra.web.exeption.handler.ExceptionHandlerConfig;
-import com.cinema.project.infra.web.listener.LocaleSessionListenerConfiguration;
 import com.cinema.project.infra.web.request.ControllerFunctionHolder;
 import com.cinema.project.infra.web.request.RequestHandler;
 import com.cinema.project.infra.web.response.ModelAndView;
 import com.cinema.project.infra.web.response.ModelAndViewHandler;
 import com.cinema.project.infra.web.response.ResponseHandler;
-import com.cinema.project.movie.MovieController;
 import com.cinema.project.movie.MovieRepository;
 import com.cinema.project.movie.MovieService;
 import com.cinema.project.seance.*;
@@ -63,17 +60,28 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         UserController userController = new UserController(userService, queryValueResolver, modelAndViewHome);
 
         //movie
-        MovieRepository movieRepository = new MovieRepository(dataSource);
+        Map<Locale, String> titleColumns = new HashMap<>();
+        titleColumns.put(new Locale("en"), "title_en");
+        titleColumns.put(new Locale("uk"), "title_uk");
+        MovieRepository movieRepository = new MovieRepository(dataSource, titleColumns);
         MovieService movieService = new MovieService(movieRepository);
-        MovieController movieController = new MovieController(movieService);
 
+        //seance providers
+        Map<UserRole, ModelAndView> paginationViewMap = new HashMap<>();
+        paginationViewMap.put(UserRole.CLIENT, new ModelAndView("/pages/client.jsp", true));
+        paginationViewMap.put(UserRole.ADMIN, new ModelAndView("/pages/admin.jsp", true));
+        SeancesForUserProvider paginationProvider = new SeancesForUserProvider(paginationViewMap, new ModelAndView("/pages/user.jsp", true));
+        Map<UserRole, ModelAndView> mainPageViewMap = new HashMap<>();
+        mainPageViewMap.put(UserRole.CLIENT, ModelAndView.withView("/mainpageforclient.jsp"));
+        mainPageViewMap.put(UserRole.ADMIN, ModelAndView.withView("/mainpageforadmin.jsp"));
+        SeancesForUserProvider mainPageProvider = new SeancesForUserProvider(mainPageViewMap, ModelAndView.withView("/mainpage.jsp"));
         //seance
         SeanceRepository seanceRepository = new SeanceRepository(dataSource);
         SeanceCreateValidatorConfig seanceCreateValidatorConfig = new SeanceCreateValidatorConfig(300, LocalTime.of(9, 0), LocalTime.of(22, 0));
         SeanceCreateValidator seanceCreateValidator = new SeanceCreateValidator(seanceRepository, seanceCreateValidatorConfig);
         SeanceCreateDtoToSeanceMapper seanceCreateDtoToSeanceMapper = new SeanceCreateDtoToSeanceMapper(movieService);
-        SeanceService seanceService = new SeanceService(seanceRepository, movieService, seanceCreateValidator, seanceCreateDtoToSeanceMapper);
-        SeanceController seanceController = new SeanceController(seanceService, queryValueResolver);
+        SeanceService seanceService = new SeanceService(seanceRepository, movieService, seanceCreateValidator, seanceCreateDtoToSeanceMapper, 10);
+        SeanceController seanceController = new SeanceController(seanceService, queryValueResolver, paginationProvider, mainPageProvider);
 
         //ticket
         TicketRepository ticketRepository = new TicketRepository(dataSource);
@@ -86,21 +94,16 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         ExceptionHandler exceptionHandler = exceptionHandlerConfig.exceptionHandler();
         Supplier<ModelAndView> controllerNotFoundResponseSupplier = () -> ModelAndView.withView("/error/notfound.jsp");
 
-
         ControllerFunctionHolder createSeance =
                 new ControllerFunctionHolder("/seance/create", "GET", seanceController::createSeance);
         ControllerFunctionHolder allSeances =
-                new ControllerFunctionHolder("/mainpage", "GET", request -> seanceController.allSeances());
+                new ControllerFunctionHolder("/mainpage", "GET", seanceController::allSeances);
         ControllerFunctionHolder login =
                 new ControllerFunctionHolder("/user/login", "POST", userController::login);
         ControllerFunctionHolder deleteSeance =
                 new ControllerFunctionHolder("/seance/delete", "POST", seanceController::delete);
-        ControllerFunctionHolder allSeancesForAdmin =
-                new ControllerFunctionHolder("/mainpageforadmin", "GET", request -> seanceController.allSeancesWithDelete());
         ControllerFunctionHolder registerUser =
                 new ControllerFunctionHolder("/user/register", "POST", userController::registerUser);
-        ControllerFunctionHolder allSeancesForClient =
-                new ControllerFunctionHolder("/mainpageforclient", "GET", request -> seanceController.allSeancesWithBuying());
         ControllerFunctionHolder createTicket =
                 new ControllerFunctionHolder("/ticket/buy", "POST", ticketController::createTicket);
         ControllerFunctionHolder allTicketsByUserId =
@@ -109,9 +112,16 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
                 new ControllerFunctionHolder("/seance/available", "POST", ticketController::getSeancesForUserByTickets);
         ControllerFunctionHolder changeLocale =
                 new ControllerFunctionHolder("/user/change/language", "POST", userController::changeLocale);
+        ControllerFunctionHolder pagination =
+                new ControllerFunctionHolder("/seance/page", "GET", seanceController::pagination);
+        ControllerFunctionHolder logout =
+                new ControllerFunctionHolder("/user/logout", "GET", userController::logout);
+        ControllerFunctionHolder paginationForAvailableSeances =
+                new ControllerFunctionHolder("/seance/available/page", "GET", ticketController::paginationForAvailableSeances);
+
         List<ControllerFunctionHolder> controllerFunctionHolders =
-                Arrays.asList(login, allSeances, createSeance, deleteSeance, allSeancesForAdmin, registerUser,
-                        allSeancesForClient, createTicket, allTicketsByUserId, filterSeanceForUser, changeLocale);
+                Arrays.asList(login, allSeances, createSeance, deleteSeance, registerUser, createTicket,
+                        allTicketsByUserId, filterSeanceForUser, changeLocale, pagination, logout, paginationForAvailableSeances);
 
         RequestHandler requestHandler = new RequestHandler(controllerFunctionHolders, exceptionHandler, controllerNotFoundResponseSupplier);
         ResponseHandler<ModelAndView> responseHandler = new ModelAndViewHandler();

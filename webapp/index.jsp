@@ -1,29 +1,29 @@
-<%@taglib uri="/WEB-INF/tag/language.tld" prefix="lang" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="/WEB-INF/tag/language.tld" prefix="lang" %>
 <%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Cinema</title>
+        <title><lang:print message="Cinema"/></title>
         <meta charset="UTF-8">
     </head>
     <body>
     <form method="POST" action="/app/cinema/user/login">
       <div class="container">
-        <label for="login"><b><lang:print>Login</lang:print></b></label>
-        <input type="text" placeholder="Enter login" name="login" required>
+        <label for="login"><b><lang:print message="Login"/></b></label>
+        <input type="text" placeholder=<lang:print message="Login"/> name="login" required>
 
-        <label for="password"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="password" required>
+        <label for="password"><b><lang:print message="Password"/></b></label>
+        <input type="password" placeholder=<lang:print message="Password"/> name="password" required>
 
-        <button type="submit">Login</button></form>
+        <button type="submit"><lang:print message="Login_as_user"/></button></form>
 
        <form method="GET" action="/app/cinema/mainpage">
-           <button type="submit">Login as guest</button>
+           <button type="submit"><lang:print message="Login_as_guest"/></button>
        </form>
 
        <form method="GET" action="/app/registeruser.jsp">
-            <button type="submit">Sign up</button>
+            <button type="submit"><lang:print message="Sign_up"/></button>
         </form>
 
        <form action="/app/cinema/user/change/language" method="POST">
@@ -35,7 +35,7 @@
                                </option>
                            </c:forEach>
                    </select>
-          <input type="submit" value="change">
+          <input type="submit" value="<lang:print message="Change_language"/>">
       </form>
 
       </div>

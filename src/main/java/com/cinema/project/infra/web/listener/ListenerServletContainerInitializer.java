@@ -1,10 +1,7 @@
 package com.cinema.project.infra.web.listener;
 
-import org.apache.catalina.SessionListener;
-
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSessionListener;
 import java.util.Set;
 
 public class ListenerServletContainerInitializer implements ServletContainerInitializer {

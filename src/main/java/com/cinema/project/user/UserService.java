@@ -12,7 +12,7 @@ public class UserService {
     public User loginUser(UserLoginRequestDto userLoginRequestDto) {
         return userRepository.getUserByLogin(userLoginRequestDto.getLogin())
                 .filter(user -> user.getPassword().equals(userLoginRequestDto.getPassword()))
-                .orElseThrow(()->new UserLoginException("wrong login or password"));
+                .orElseThrow(()->new UserLoginException("wrong_login_or_password"));
     }
 
     public User registerClient(UserLoginRequestDto userLoginRequestDto) {

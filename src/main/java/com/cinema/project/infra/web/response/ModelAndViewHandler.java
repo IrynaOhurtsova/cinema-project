@@ -24,6 +24,6 @@ public class ModelAndViewHandler implements ResponseHandler<ModelAndView>{
 
     private void fillAttributes(HttpServletRequest request, ModelAndView modelAndView) {
         Map<String, Object> attributes = modelAndView.getAttributes();
-        attributes.forEach((name, attribute) -> request.setAttribute(name, attribute));
+        attributes.forEach(request::setAttribute);
     }
 }

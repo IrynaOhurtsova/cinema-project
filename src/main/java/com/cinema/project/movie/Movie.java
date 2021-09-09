@@ -1,12 +1,10 @@
 package com.cinema.project.movie;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
-@Data
-@AllArgsConstructor
+@Value
 public class Movie {
 
-    private Long id;
-    private String title;
+    Long id;
+    String title;
 }

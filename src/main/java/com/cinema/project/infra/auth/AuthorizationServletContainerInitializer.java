@@ -1,7 +1,5 @@
 package com.cinema.project.infra.auth;
 
-import com.cinema.project.infra.web.listener.LocaleSessionListenerConfiguration;
-
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;

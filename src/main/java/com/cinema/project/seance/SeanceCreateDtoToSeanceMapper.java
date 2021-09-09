@@ -4,13 +4,15 @@ import com.cinema.project.movie.Movie;
 import com.cinema.project.movie.MovieService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Locale;
+
 @RequiredArgsConstructor
 public class SeanceCreateDtoToSeanceMapper {
 
     private final MovieService movieService;
 
-    public Seance map(SeanceCreateDto seanceCreateDto) {
-        Movie movie = movieService.getMovieByTitle(seanceCreateDto.getTitle());
+    public Seance map(SeanceCreateDto seanceCreateDto, Locale locale) {
+        Movie movie = movieService.getMovieByTitle(seanceCreateDto.getTitle(), locale);
         return Seance.builder()
                 .date(seanceCreateDto.getDate())
                 .time(seanceCreateDto.getTime())

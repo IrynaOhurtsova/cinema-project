@@ -137,4 +137,51 @@ public class SeanceRepository {
         }
     }
 
+    @SneakyThrows
+    public List<Seance> getSeancesPerPage(Integer countPerPage, Integer firstValue) {
+        String sql_query = "SELECT * FROM seance LIMIT ?, ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql_query)) {
+            preparedStatement.setInt(1, firstValue);
+            preparedStatement.setInt(2,countPerPage);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Seance> seances = new ArrayList<>();
+            while (resultSet.next()) {
+                seances.add(new Seance(resultSet.getLong("id"),
+                        resultSet.getDate("date").toLocalDate(),
+                        resultSet.getTime("time").toLocalTime(),
+                        resultSet.getLong("movie_id"),
+                        resultSet.getDouble("price"),
+                        resultSet.getInt("seating_capacity"),
+                        resultSet.getInt("free_Places")));
+            }
+            return seances;
+        }
+    }
+
+    @SneakyThrows
+    public List<Seance> getSeancesPerPageByIds(List<Long> ids, Integer countPerPage, Integer firstValue) {
+        String prepare_sql_query = "SELECT * FROM seance WHERE id IN (%s) LIMIT ?, ?";
+        String idsParam = ids.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
+        String sql_query = String.format(prepare_sql_query, idsParam);
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql_query)) {
+            preparedStatement.setInt(1, firstValue);
+            preparedStatement.setInt(2,countPerPage);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Seance> seances = new ArrayList<>();
+            while (resultSet.next()) {
+                seances.add(new Seance(resultSet.getLong("id"),
+                        resultSet.getDate("date").toLocalDate(),
+                        resultSet.getTime("time").toLocalTime(),
+                        resultSet.getLong("movie_id"),
+                        resultSet.getDouble("price"),
+                        resultSet.getInt("seating_capacity"),
+                        resultSet.getInt("free_Places")));
+            }
+            return seances;
+        }
+    }
 }

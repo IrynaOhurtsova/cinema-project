@@ -11,7 +11,12 @@
     <tag>
         <name>print</name>
         <tag-class>com.cinema.project.infra.web.tag.Language</tag-class>
-        <body-content>scriptless</body-content>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>message</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
 </taglib>

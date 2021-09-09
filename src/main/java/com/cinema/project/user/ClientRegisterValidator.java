@@ -11,7 +11,7 @@ public class ClientRegisterValidator {
 
     public User validate(User user) {
         if (checkLogin(user)) {
-            throw new UserLoginException("user with this login already exists");
+            throw new UserLoginException("user_already_exist");
         }
         return user;
     }

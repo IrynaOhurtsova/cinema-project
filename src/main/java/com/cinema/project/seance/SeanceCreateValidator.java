@@ -12,16 +12,16 @@ public class SeanceCreateValidator {
 
     public Seance validate(Seance seance) {
         if (!checkSeanceTime(seance)) {
-            throw new SeanceCreateException("wrong time, time can be from 9:00 to 22:00");
+            throw new SeanceCreateException("wrong_time");
         }
         if (checkSeanceDateAndTime(seance).isPresent()) {
-            throw new SeanceCreateException("seance with this date and time exists, choose vacant date and time");
+            throw new SeanceCreateException("wrong_date_and_time");
         }
         if (seance.getSeatingCapacity() > config.getMaxSeatingCapacity()) {
-            throw new SeanceCreateException("wrong seating capacity, seating capacity can be to 300 people");
+            throw new SeanceCreateException("wrong_seating_capacity");
         }
         if (seance.getFreePlaces() > config.getMaxSeatingCapacity()) {
-            throw new SeanceCreateException("wrong count of free places, it can be to 300 people");
+            throw new SeanceCreateException("wrong_count_of_free_places");
         }
         return seance;
     }

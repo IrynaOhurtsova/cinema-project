@@ -16,7 +16,7 @@ public class BaseExceptionHandler implements ExceptionHandler {
     public ModelAndView handle(Exception exception) {
         return exceptionHandlerFunctionHolders.stream()
                 .filter(holder -> holder.getPredicate().test(exception))
-                .map(holder -> holder.getHandler())
+                .map(ExceptionHandlerFunctionHolder::getHandler)
                 .findFirst()
                 .map(handleFunction -> handleFunction.apply(exception))
                 .orElseGet(defaultResultSupplier);

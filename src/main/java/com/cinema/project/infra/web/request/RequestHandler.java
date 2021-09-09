@@ -22,7 +22,7 @@ public class RequestHandler {
         return controllerFunctionHolders.stream()
                 .filter(controllerFunctionHolder -> controllerFunctionHolder.isMatch(controllerPath, method))
                 .findFirst()
-                .map(controllerFunctionHolder -> controllerFunctionHolder.getControllerFunction())
+                .map(ControllerFunctionHolder::getControllerFunction)
                 .map(handler -> invokeController(req, handler))
                 .orElseGet(controllerNotFoundResponseSupplier);
     }

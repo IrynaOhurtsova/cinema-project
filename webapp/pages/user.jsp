@@ -14,10 +14,6 @@
     </head>
     <body>
 
-    <form method="GET" action="/app/cinema/seance/page">
-        <input class="page-item" type="hidden" name="value" value="0">
-        <button class="page-link" type="submit"><lang:print message="Display_by"/></button>
-    </form>
    <table>
         <tr>
             <th><lang:print message="Date"/></th>
@@ -38,6 +34,14 @@
    			</tr>
    		</c:forEach>
    	</table>
+
+
+    <ul class="pagination">
+      <c:forEach var="page" items="${pageAndFirstValue}">
+      <li class="page-item"><a class="page-link" href="/app/cinema/seance/page?value=${page.value}">${page.key}</a></li>
+      </c:forEach>
+    </ul>
+
 
 
 

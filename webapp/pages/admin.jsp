@@ -14,10 +14,6 @@
     </head>
     <body>
 
-    <form method="GET" action="/app/cinema/seance/page">
-        <input class="page-item" type="hidden" name="value" value="0">
-        <button class="page-link" type="submit"><lang:print message="Display_by"/></button>
-    </form>
    <table>
         <tr>
             <th><lang:print message="Date"/></th>
@@ -26,6 +22,8 @@
             <th><lang:print message="Price"/></th>
             <th><lang:print message="Room_capacity"/></th>
             <th><lang:print message="Free_places"/></th>
+            <th><lang:print message="Sold_tickets"/></th>
+            <th><lang:print message="Delete"/></th>
         </tr>
         <c:forEach var="seance" items="${seances}">
    			<tr>
@@ -35,9 +33,24 @@
    				<td>${seance.price}</td>
    				<td>${seance.seatingCapacity}</td>
    				<td>${seance.freePlaces}</td>
+   				<td>${seance.seatingCapacity - seance.freePlaces}</td>
+   				<td>
+   				    <form method="POST" action="/app/cinema/seance/delete"
+   				    onsubmit="return confirm('<lang:print message="Do_you_want_delete_seance_on"/>${seance.movie.title}?')">
+                              <input type="hidden" name="seanceId" value="${seance.id}">
+                              <input type="submit" value=<lang:print message="delete"/>>
+                    </form>
+   				</td>
    			</tr>
    		</c:forEach>
    	</table>
+
+    <ul class="pagination">
+      <c:forEach var="page" items="${pageAndFirstValue}">
+      <li class="page-item"><a class="page-link" href="/app/cinema/seance/page?value=${page.value}">${page.key}</a></li>
+      </c:forEach>
+    </ul>
+
 
 
 
