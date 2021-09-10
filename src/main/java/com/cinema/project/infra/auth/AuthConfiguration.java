@@ -15,11 +15,11 @@ public class AuthConfiguration {
         //holders
         AuthorizationPathMatcher createdSeance = new AuthorizationPathMatcher("/cinema/seance/create", UserRole.ADMIN);
         AuthorizationPathMatcher deleteSeance = new AuthorizationPathMatcher("/cinema/seance/delete", UserRole.ADMIN);
-        AuthorizationPathMatcher mainPageForAdmin = new AuthorizationPathMatcher("/cinema/mainpageforadmin", UserRole.ADMIN);
-        AuthorizationPathMatcher mainPageForClient = new AuthorizationPathMatcher("/cinema/mainpageforclient", UserRole.CLIENT);
         AuthorizationPathMatcher buyTicket = new AuthorizationPathMatcher("/cinema/ticket/buy", UserRole.CLIENT);
         AuthorizationPathMatcher clientTickets = new AuthorizationPathMatcher("/cinema/ticket/mytickets", UserRole.CLIENT);
         AuthorizationPathMatcher availableClientSeances = new AuthorizationPathMatcher("/cinema/seance/available", UserRole.CLIENT);
+        AuthorizationPathMatcher logout = new AuthorizationPathMatcher("/cinema/user/logout", UserRole.CLIENT, UserRole.ADMIN);
+        AuthorizationPathMatcher paginationAvailableSeances = new AuthorizationPathMatcher("cinema/seance/available/page", UserRole.CLIENT);
 
         //general jsp
         AuthorizationPathMatcher mainPageForAdminJsp = new AuthorizationPathMatcher("/mainpageforadmin.jsp", UserRole.ADMIN);
@@ -30,11 +30,15 @@ public class AuthConfiguration {
         AuthorizationPathMatcher homeAdmin = new AuthorizationPathMatcher("/home/admin.jsp", UserRole.ADMIN);
 
         //seance jsp
-        AuthorizationPathMatcher createdSeanceJsp = new AuthorizationPathMatcher("/seance/createdseance.jsp", UserRole.ADMIN);
+        AuthorizationPathMatcher availableSeancesForClient = new AuthorizationPathMatcher("/seance/available.jsp", UserRole.CLIENT);
         AuthorizationPathMatcher createSeanceJsp = new AuthorizationPathMatcher("/seance/createnewseance.jsp", UserRole.ADMIN);
 
+        //pages
+        AuthorizationPathMatcher paginationForAdmin = new AuthorizationPathMatcher("/pages/admin.jsp", UserRole.ADMIN);
+        AuthorizationPathMatcher paginationForClient = new AuthorizationPathMatcher("/pages/client.jsp", UserRole.CLIENT);
+        AuthorizationPathMatcher paginationAvailableSeancesForClient = new AuthorizationPathMatcher("/pages/available.jsp", UserRole.CLIENT);
+
         //ticket jsp
-        AuthorizationPathMatcher buyingHasDone = new AuthorizationPathMatcher("/ticket/buyinghasdone.jsp", UserRole.CLIENT);
         AuthorizationPathMatcher clientTicketsJsp = new AuthorizationPathMatcher("/ticket/mytickets.jsp", UserRole.CLIENT);
 
         //error jsp
@@ -43,8 +47,8 @@ public class AuthConfiguration {
         AuthorizationPathMatcher ticketBuying = new AuthorizationPathMatcher("/error/ticketbuing.jsp", UserRole.CLIENT);
         AuthorizationPathMatcher ticketExist = new AuthorizationPathMatcher("/error/ticketexist.jsp", UserRole.CLIENT);
 
-        return Arrays.asList(createdSeance, deleteSeance, mainPageForAdmin, mainPageForClient, buyTicket, clientTickets, availableClientSeances,
-                mainPageForAdminJsp, mainPageForClientJsp, homeClient, homeAdmin, createdSeanceJsp, createSeanceJsp, buyingHasDone, clientTicketsJsp,
-                creatingIsImpossible, movieNotFound, ticketBuying, ticketExist);
+        return Arrays.asList(createdSeance, deleteSeance, logout, paginationAvailableSeances, buyTicket, clientTickets, availableClientSeances,
+                mainPageForAdminJsp, mainPageForClientJsp, homeClient, homeAdmin, availableSeancesForClient, createSeanceJsp, clientTicketsJsp,
+                creatingIsImpossible, movieNotFound, ticketBuying, ticketExist, paginationForAdmin, paginationForClient, paginationAvailableSeancesForClient);
     }
 }

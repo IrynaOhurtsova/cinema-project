@@ -45,7 +45,7 @@ public class TicketService {
         return seanceService.getSeancesPerPageByIds(getSeancesIdsByTickets(user),firstValue, locale);
     }
 
-    public Map<Integer, Integer> getPageAndFirstValue(User user, Locale locale) {
+    public Map<Integer, Integer> getPageAndFirstValue(User user) {
         List<Seance> seancesByIds = seanceService.getSeancesByIds(getSeancesIdsByTickets(user));
         return seanceService.findPageAndFirstValue(seancesByIds);
     }

@@ -23,9 +23,7 @@ public class UserController {
         Locale locale = new Locale(selectedLocale);
         HttpSession session = request.getSession(false);
         session.setAttribute("selectedLocale", locale);
-        ModelAndView modelAndView = ModelAndView.withView(view);
-        modelAndView.setRedirect(true);
-        return modelAndView;
+        return new ModelAndView(view, true);
     }
 
     public ModelAndView login(HttpServletRequest request) {
@@ -43,16 +41,12 @@ public class UserController {
         User client = userService.registerClient(loginRequestDto);
         HttpSession session = request.getSession(false);
         session.setAttribute("user", client);
-        ModelAndView modelAndView = ModelAndView.withView("/home/client.jsp");
-        modelAndView.setRedirect(true);
-        return modelAndView;
+        return new ModelAndView("/home/client.jsp", true);
     }
 
     public ModelAndView logout (HttpServletRequest request) {
         HttpSession session = request.getSession();
-        session.invalidate();
-        ModelAndView modelAndView = ModelAndView.withView("");
-        modelAndView.setRedirect(true);
-        return modelAndView;
+        session.removeAttribute("user");
+        return new ModelAndView("", true);
     }
 }

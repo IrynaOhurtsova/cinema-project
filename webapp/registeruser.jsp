@@ -26,7 +26,7 @@
 
                 <button type="submit"><lang:print message="To_register"/></button></form>
 
-               <form action="/app/cinema/user/change/language" method="POST">
+               <form action="/app/cinema/user/change/language" method="GET">
                   <input type="hidden" name="view" value="/registeruser.jsp"/>
                            <select name="selectedLocale">
                                    <c:forEach var="locale" items="${sessionScope.locales}">

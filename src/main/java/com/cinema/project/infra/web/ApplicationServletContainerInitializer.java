@@ -68,26 +68,29 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
 
         //seance providers
         Map<UserRole, ModelAndView> paginationViewMap = new HashMap<>();
-        paginationViewMap.put(UserRole.CLIENT, new ModelAndView("/pages/client.jsp", true));
-        paginationViewMap.put(UserRole.ADMIN, new ModelAndView("/pages/admin.jsp", true));
-        SeancesForUserProvider paginationProvider = new SeancesForUserProvider(paginationViewMap, new ModelAndView("/pages/user.jsp", true));
+        paginationViewMap.put(UserRole.CLIENT, ModelAndView.withView("/pages/client.jsp"));
+        paginationViewMap.put(UserRole.ADMIN, ModelAndView.withView("/pages/admin.jsp"));
+        SeancesForUserProvider paginationViewProvider = new SeancesForUserProvider(paginationViewMap, ModelAndView.withView("/pages/user.jsp"));
         Map<UserRole, ModelAndView> mainPageViewMap = new HashMap<>();
         mainPageViewMap.put(UserRole.CLIENT, ModelAndView.withView("/mainpageforclient.jsp"));
         mainPageViewMap.put(UserRole.ADMIN, ModelAndView.withView("/mainpageforadmin.jsp"));
-        SeancesForUserProvider mainPageProvider = new SeancesForUserProvider(mainPageViewMap, ModelAndView.withView("/mainpage.jsp"));
+        SeancesForUserProvider mainPageViewProvider = new SeancesForUserProvider(mainPageViewMap, ModelAndView.withView("/mainpage.jsp"));
+
+        //ticket
+        TicketRepository ticketRepository = new TicketRepository(dataSource);
+
         //seance
         SeanceRepository seanceRepository = new SeanceRepository(dataSource);
         SeanceCreateValidatorConfig seanceCreateValidatorConfig = new SeanceCreateValidatorConfig(300, LocalTime.of(9, 0), LocalTime.of(22, 0));
         SeanceCreateValidator seanceCreateValidator = new SeanceCreateValidator(seanceRepository, seanceCreateValidatorConfig);
         SeanceCreateDtoToSeanceMapper seanceCreateDtoToSeanceMapper = new SeanceCreateDtoToSeanceMapper(movieService);
         SeanceService seanceService = new SeanceService(seanceRepository, movieService, seanceCreateValidator, seanceCreateDtoToSeanceMapper, 10);
-        SeanceController seanceController = new SeanceController(seanceService, queryValueResolver, paginationProvider, mainPageProvider);
+        SeanceController seanceController = new SeanceController(seanceService, queryValueResolver, paginationViewProvider, mainPageViewProvider);
 
         //ticket
-        TicketRepository ticketRepository = new TicketRepository(dataSource);
         TicketCreateValidator ticketCreateValidator = new TicketCreateValidator(seanceService);
         TicketService ticketService = new TicketService(ticketRepository, ticketCreateValidator, seanceService);
-        TicketController ticketController = new TicketController(ticketService, queryValueResolver);
+        TicketController ticketController = new TicketController(ticketService);
 
         //web
         ExceptionHandlerConfig exceptionHandlerConfig = new ExceptionHandlerConfig();
@@ -109,9 +112,9 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         ControllerFunctionHolder allTicketsByUserId =
                 new ControllerFunctionHolder("/ticket/mytickets", "GET", ticketController::getAllTicketsByUserId);
         ControllerFunctionHolder filterSeanceForUser =
-                new ControllerFunctionHolder("/seance/available", "POST", ticketController::getSeancesForUserByTickets);
+                new ControllerFunctionHolder("/seance/available", "GET", ticketController::getSeancesForUserByTickets);
         ControllerFunctionHolder changeLocale =
-                new ControllerFunctionHolder("/user/change/language", "POST", userController::changeLocale);
+                new ControllerFunctionHolder("/user/change/language", "GET", userController::changeLocale);
         ControllerFunctionHolder pagination =
                 new ControllerFunctionHolder("/seance/page", "GET", seanceController::pagination);
         ControllerFunctionHolder logout =

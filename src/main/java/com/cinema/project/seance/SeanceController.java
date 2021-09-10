@@ -16,15 +16,15 @@ public class SeanceController {
 
     private final SeanceService seanceService;
     private final QueryValueResolver queryValueResolver;
-    private final SeancesForUserProvider paginationProvider;
-    private final SeancesForUserProvider mainPageProvider;
+    private final SeancesForUserProvider paginationViewProvider;
+    private final SeancesForUserProvider mainPageViewProvider;
 
     public ModelAndView allSeances(HttpServletRequest request) {
         HttpSession session = request.getSession();
         Locale selectedLocale = (Locale) session.getAttribute("selectedLocale");
         List<SeanceWithMovieTitleDto> seances = seanceService.getAllSeances(selectedLocale);
         User user = (User) session.getAttribute("user");
-        ModelAndView modelAndView = mainPageProvider.getModelAmdViewForUser(user);
+        ModelAndView modelAndView = mainPageViewProvider.getModelAmdViewForUser(user);
         modelAndView.addAttribute("seances", seances);
         return modelAndView;
     }
@@ -34,9 +34,7 @@ public class SeanceController {
         HttpSession session = request.getSession();
         Locale selectedLocale = (Locale) session.getAttribute("selectedLocale");
         seanceService.createSeance(seanceCreateDto, selectedLocale);
-        ModelAndView modelAndView = ModelAndView.withView("/cinema/mainpage");
-        modelAndView.setRedirect(true);
-        return modelAndView;
+        return new ModelAndView("/cinema/mainpage", true);
     }
 
     public ModelAndView delete(HttpServletRequest request) {
@@ -53,11 +51,11 @@ public class SeanceController {
         Map<Integer, Integer> pageAndFirstValue = seanceService.getPageAndFirstValue();
         List<SeanceWithMovieTitleDto> seancesPerPage = seanceService.getSeancesPerPage(firstValue, selectedLocale);
 
-        session.setAttribute("pageAndFirstValue", pageAndFirstValue);
-        session.setAttribute("seances", seancesPerPage);
-
         User user = (User) session.getAttribute("user");
-        return paginationProvider.getModelAmdViewForUser(user);
+        ModelAndView modelAndView = paginationViewProvider.getModelAmdViewForUser(user);
+        modelAndView.addAttribute("pageAndFirstValue", pageAndFirstValue);
+        modelAndView.addAttribute("seances", seancesPerPage);
+        return modelAndView;
     }
 
 

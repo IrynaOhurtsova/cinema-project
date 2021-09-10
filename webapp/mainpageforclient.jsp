@@ -18,7 +18,7 @@
     <button onclick="sortTable(2)"><lang:print message="Sort_title"/></button>
     <button onclick="sortTable(3)"><lang:print message="Sort_price"/></button>
     <button onclick="sortTable(5)"><lang:print message="Sort_free_places"/></button>
-    <form method="POST" action="/app/cinema/seance/available">
+    <form method="GET" action="/app/cinema/seance/available">
         <button><lang:print message="Available_seances"/></button>
     </form>
 

@@ -14,9 +14,9 @@ public class UserRepository {
 
     @SneakyThrows
     public Optional<User> getUserByLogin(String login) {
-        String sql_query = "SELECT * FROM user WHERE login IN (?)";
+        String sqlQuery = "SELECT * FROM user WHERE login IN (?)";
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql_query)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             preparedStatement.setString(1, login);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -33,9 +33,9 @@ public class UserRepository {
 
     @SneakyThrows
     public User registerClient(User user) {
-        String sql_query = "INSERT INTO user (login, password, role) VALUES (?, ?, ?)";
+        String sqlQuery = "INSERT INTO user (login, password, role) VALUES (?, ?, ?)";
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql_query,Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery,Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, user.getLogin());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setString(3, String.valueOf(user.getRole()));

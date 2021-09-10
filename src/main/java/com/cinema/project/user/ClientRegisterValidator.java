@@ -2,12 +2,13 @@ package com.cinema.project.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Value;
 
 @AllArgsConstructor
-@Data
+@Value
 public class ClientRegisterValidator {
 
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     public User validate(User user) {
         if (checkLogin(user)) {

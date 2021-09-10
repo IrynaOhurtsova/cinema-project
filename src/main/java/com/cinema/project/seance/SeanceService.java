@@ -24,9 +24,7 @@ public class SeanceService {
 
         Map<Long, Movie> moviesById = getMoviesById(seances, locale);
 
-        return seances.stream()
-                .map(seance -> new SeanceWithMovieTitleDto(seance, moviesById.get(seance.getMovieId())))
-                .collect(Collectors.toList());
+        return getSeancesWithMovieTitleDtoBySeanceAndMovie(moviesById, seances);
     }
 
     public Seance createSeance(SeanceCreateDto seanceCreateDto, Locale locale) {
@@ -49,7 +47,7 @@ public class SeanceService {
                         seance -> new SeanceWithMovieTitleDto(seance, moviesById.get(seance.getMovieId()))));
     }
 
-    public List<Seance> getSeancesByIds(List<Long> ids){
+    public List<Seance> getSeancesByIds(List<Long> ids) {
         return seanceRepository.getSeancesByIds(ids);
     }
 
@@ -59,13 +57,11 @@ public class SeanceService {
     }
 
     public List<SeanceWithMovieTitleDto> getSeancesPerPage(String firstValue, Locale locale) {
-        List<Seance> seancesPerPage = seanceRepository.getSeancesPerPage(counterSeancesPerPage,Integer.valueOf(firstValue));
+        List<Seance> seancesPerPage = seanceRepository.getSeancesPerPage(counterSeancesPerPage, Integer.valueOf(firstValue));
 
         Map<Long, Movie> moviesById = getMoviesById(seancesPerPage, locale);
 
-        return seancesPerPage.stream()
-                .map(seance -> new SeanceWithMovieTitleDto(seance, moviesById.get(seance.getMovieId())))
-                .collect(Collectors.toList());
+        return getSeancesWithMovieTitleDtoBySeanceAndMovie(moviesById, seancesPerPage);
     }
 
     public Map<Integer, Integer> getPageAndFirstValue() {
@@ -74,13 +70,11 @@ public class SeanceService {
     }
 
     public List<SeanceWithMovieTitleDto> getSeancesPerPageByIds(List<Long> ids, String firstValue, Locale locale) {
-        List<Seance> seancesPerPage = seanceRepository.getSeancesPerPageByIds(ids,counterSeancesPerPage,Integer.valueOf(firstValue));
+        List<Seance> seancesPerPage = seanceRepository.getSeancesPerPageByIds(ids, counterSeancesPerPage, Integer.valueOf(firstValue));
 
         Map<Long, Movie> moviesById = getMoviesById(seancesPerPage, locale);
 
-        return seancesPerPage.stream()
-                .map(seance -> new SeanceWithMovieTitleDto(seance, moviesById.get(seance.getMovieId())))
-                .collect(Collectors.toList());
+        return getSeancesWithMovieTitleDtoBySeanceAndMovie(moviesById, seancesPerPage);
     }
 
     public Map<Integer, Integer> findPageAndFirstValue(List<Seance> seances) {
@@ -95,5 +89,11 @@ public class SeanceService {
                 .map(Seance::getMovieId)
                 .collect(Collectors.toList());
         return movieService.getMoviesById(moviesId, locale);
+    }
+
+    private List<SeanceWithMovieTitleDto> getSeancesWithMovieTitleDtoBySeanceAndMovie(Map<Long, Movie> moviesById, List<Seance> seances) {
+        return seances.stream()
+                .map(seance -> new SeanceWithMovieTitleDto(seance, moviesById.get(seance.getMovieId())))
+                .collect(Collectors.toList());
     }
 }

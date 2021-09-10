@@ -7,6 +7,6 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserLoginRequestDto {
 
-    private String login;
-    private String password;
+    String login;
+    String password;
 }
