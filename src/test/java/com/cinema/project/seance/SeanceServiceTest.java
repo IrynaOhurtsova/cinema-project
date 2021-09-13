@@ -2,11 +2,9 @@ package com.cinema.project.seance;
 
 import com.cinema.project.movie.Movie;
 import com.cinema.project.movie.MovieService;
-import liquibase.pro.packaged.L;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -36,7 +34,10 @@ public class SeanceServiceTest {
     private final Seance expectedSeance = new Seance(1L, LocalDate.of(2, 2, 2), LocalTime.MIN, 1L, 50.0, 300, 300);
     private final Movie expectedMovie = new Movie(1L, "title");
     private final SeanceWithMovieTitleDto expectedSeanceDto = new SeanceWithMovieTitleDto(expectedSeance, expectedMovie);
-    private final List<Seance> expectedSeances = Collections.singletonList(expectedSeance);
+    private final List<Seance> expectedSeancesList = Collections.singletonList(expectedSeance);
+    private final List<Long> ids = Collections.singletonList(expectedSeance.getMovieId());
+    private final Map<Long, Movie> moviesById = Collections.singletonMap(expectedMovie.getId(), expectedMovie);
+    private final List<SeanceWithMovieTitleDto> expectedSeancesDtoList = Collections.singletonList(expectedSeanceDto);
 
     @Before
     public void init() {
@@ -47,13 +48,13 @@ public class SeanceServiceTest {
 
     @Test
     public void getAllSeances() {
-        when(seanceRepository.getAllSeances()).thenReturn(expectedSeances);
-        when(movieService.getMoviesById(Collections.singletonList(expectedSeance.getMovieId()), Locale.CANADA)).thenReturn(Collections.singletonMap(expectedMovie.getId(), expectedMovie));
+        when(seanceRepository.getAllSeances()).thenReturn(expectedSeancesList);
+        when(movieService.getMoviesById(ids, Locale.CANADA)).thenReturn(moviesById);
 
         List<SeanceWithMovieTitleDto> result = seanceService.getAllSeances(Locale.CANADA);
 
         assertTrue(result.contains(expectedSeanceDto));
-        assertEquals(Collections.singletonList(expectedSeanceDto), result);
+        assertEquals(expectedSeancesDtoList, result);
     }
 
     @Test
@@ -104,10 +105,9 @@ public class SeanceServiceTest {
     @Test
     public void getSeancesByIds() {
         Map<Long, SeanceWithMovieTitleDto> expected = Collections.singletonMap(expectedSeanceDto.getId(), expectedSeanceDto);
-        List<Long> ids = Collections.singletonList(expectedSeance.getId());
 
-        when(seanceRepository.getSeancesByIds(ids)).thenReturn(Collections.singletonList(expectedSeance));
-        when(movieService.getMoviesById(Collections.singletonList(expectedSeance.getMovieId()), Locale.CANADA)).thenReturn(Collections.singletonMap(expectedMovie.getId(), expectedMovie));
+        when(seanceRepository.getSeancesByIds(ids)).thenReturn(expectedSeancesList);
+        when(movieService.getMoviesById(ids, Locale.CANADA)).thenReturn(moviesById);
 
         Map<Long, SeanceWithMovieTitleDto> result = seanceService.getSeancesByIds(ids, Locale.CANADA);
 
@@ -116,14 +116,11 @@ public class SeanceServiceTest {
 
     @Test
     public void testGetSeancesByIds() {
-        List<Seance> expected = Collections.singletonList(expectedSeance);
-        List<Long> ids = Collections.singletonList(expectedSeance.getId());
-
-        when(seanceRepository.getSeancesByIds(ids)).thenReturn(expected);
+        when(seanceRepository.getSeancesByIds(ids)).thenReturn(expectedSeancesList);
 
         List<Seance> result = seanceService.getSeancesByIds(ids);
 
-        assertEquals(expected, result);
+        assertEquals(expectedSeancesList, result);
     }
 
     @Test
@@ -144,17 +141,17 @@ public class SeanceServiceTest {
 
     @Test
     public void getSeancesPerPage() {
-        when(seanceRepository.getSeancesPerPage(anyInt(), anyInt())).thenReturn(Collections.singletonList(expectedSeance));
-        when(movieService.getMoviesById(Collections.singletonList(expectedSeance.getMovieId()), Locale.CANADA)).thenReturn(Collections.singletonMap(expectedMovie.getId(), expectedMovie));
+        when(seanceRepository.getSeancesPerPage(anyInt(), anyInt())).thenReturn(expectedSeancesList);
+        when(movieService.getMoviesById(ids, Locale.CANADA)).thenReturn(moviesById);
 
         List<SeanceWithMovieTitleDto> result = seanceService.getSeancesPerPage("0", Locale.CANADA);
 
-        assertEquals(Collections.singletonList(expectedSeanceDto), result);
+        assertEquals(expectedSeancesDtoList, result);
     }
 
     @Test
     public void getPageAndFirstValue() {
-        when(seanceRepository.getAllSeances()).thenReturn(Collections.singletonList(expectedSeance));
+        when(seanceRepository.getAllSeances()).thenReturn(expectedSeancesList);
 
         Map<Integer, Integer> expected = Collections.singletonMap(1, 0);
 
@@ -165,19 +162,19 @@ public class SeanceServiceTest {
 
     @Test
     public void getSeancesPerPageByIds() {
-        when(seanceRepository.getSeancesPerPageByIds(anyList(),anyInt(), anyInt())).thenReturn(Collections.singletonList(expectedSeance));
-        when(movieService.getMoviesById(Collections.singletonList(expectedSeance.getMovieId()), Locale.CANADA)).thenReturn(Collections.singletonMap(expectedMovie.getId(), expectedMovie));
+        when(seanceRepository.getSeancesPerPageByIds(ids, 10, 0)).thenReturn(expectedSeancesList);
+        when(movieService.getMoviesById(ids, Locale.CANADA)).thenReturn(moviesById);
 
-        List<SeanceWithMovieTitleDto> result = seanceService.getSeancesPerPageByIds(Collections.singletonList(1L),"0", Locale.CANADA);
+        List<SeanceWithMovieTitleDto> result = seanceService.getSeancesPerPageByIds(ids, "0", Locale.CANADA);
 
-        assertEquals(Collections.singletonList(expectedSeanceDto), result);
+        assertEquals(expectedSeancesDtoList, result);
     }
 
     @Test
     public void findPageAndFirstValue() {
         Map<Integer, Integer> expected = Collections.singletonMap(1, 0);
 
-        Map<Integer, Integer> result = seanceService.findPageAndFirstValue(Collections.singletonList(expectedSeance));
+        Map<Integer, Integer> result = seanceService.findPageAndFirstValue(expectedSeancesList);
 
         assertEquals(expected, result);
     }
