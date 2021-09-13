@@ -55,22 +55,4 @@ public class SeanceCreateDtoToSeanceMapperTest {
         assertEquals(expected, result);
 
     }
-
-    @Test
-    public void mapDtoToSeance2() {
-        String title = "title";
-        SeanceCreateDto seanceCreateDto = new SeanceCreateDto();
-
-        Movie expectedMovie = new Movie(1L, title);
-        Seance expected = Seance.builder()
-                .movieId(expectedMovie.getId())
-                .build();
-
-        when(movieService.getMovieByTitle(seanceCreateDto.getTitle(), Locale.CANADA)).thenReturn(expectedMovie);
-
-        Seance result = seanceCreateDtoToSeanceMapper.map(seanceCreateDto, Locale.CANADA);
-
-        assertEquals(expected, result);
-
-    }
 }

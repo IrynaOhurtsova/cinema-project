@@ -33,8 +33,7 @@ public class SeanceService {
     }
 
     public Seance deleteSeanceById(Long id) {
-        return seanceRepository.deleteSeanceById(seanceRepository.findSeanceByID(id)
-                .orElseThrow(() -> new SeanceNotFoundException("seance doesn't exist")));
+        return seanceRepository.deleteSeanceById(getSeanceById(id));
     }
 
     public Map<Long, SeanceWithMovieTitleDto> getSeancesByIds(List<Long> ids, Locale locale) {

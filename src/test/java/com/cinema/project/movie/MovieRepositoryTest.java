@@ -71,7 +71,7 @@ public class MovieRepositoryTest {
         when(titlesMap.get(Locale.CANADA)).thenReturn("colunmName");
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        preparedStatement.setString(1,title);
+        preparedStatement.setString(1, title);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true);
         when(resultSet.getLong("id")).thenReturn(expectedMovie.getId());
@@ -88,7 +88,7 @@ public class MovieRepositoryTest {
         when(titlesMap.get(Locale.CANADA)).thenReturn("colunmName");
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        preparedStatement.setString(1,title);
+        preparedStatement.setString(1, title);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(false);
 
