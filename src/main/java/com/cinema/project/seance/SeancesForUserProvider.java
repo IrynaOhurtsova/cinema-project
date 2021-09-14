@@ -14,7 +14,7 @@ public class SeancesForUserProvider {
     private final Map<UserRole, ModelAndView> modelByRole;
     private final ModelAndView defaultModel;
 
-    public ModelAndView getModelAmdViewForUser(User user) {
+    public ModelAndView getModelAndViewForUser(User user) {
         return Optional.ofNullable(user)
                 .map(User::getRole)
                 .map(modelByRole::get)

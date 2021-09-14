@@ -2,6 +2,7 @@ package com.cinema.project.infra.web;
 
 import com.cinema.project.infra.config.ConfigLoader;
 import com.cinema.project.infra.db.DataSourceConfig;
+import com.cinema.project.infra.db.LiquibaseStarter;
 import com.cinema.project.infra.web.exeption.handler.ExceptionHandler;
 import com.cinema.project.infra.web.exeption.handler.ExceptionHandlerConfig;
 import com.cinema.project.infra.web.request.ControllerFunctionHolder;
@@ -48,6 +49,8 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
 
         //datasource
         DataSource dataSource = new DataSourceConfig(configLoader).configureDataSource();
+        LiquibaseStarter liquibaseStarter = new LiquibaseStarter(dataSource, configLoader);
+        liquibaseStarter.updateDatabase();
 
         //user
         UserRepository userRepository = new UserRepository(dataSource);

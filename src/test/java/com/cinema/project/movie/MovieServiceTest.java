@@ -1,13 +1,10 @@
 package com.cinema.project.movie;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
 
 import java.util.*;
 
@@ -22,8 +19,6 @@ public class MovieServiceTest {
     private MovieRepository movieRepository;
     @InjectMocks
     private MovieService movieService;
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
 
     @Test
     public void getMoviesByIdWithEmptyIds() {
@@ -48,18 +43,6 @@ public class MovieServiceTest {
 
     @Test(expected = MovieNotFoundException.class)
     public void getMovieByTitleWithWrongTitleShouldThrowsException() {
-        String title = "wrong title";
-        when(movieRepository.getMovieByTitle(title, Locale.CANADA)).thenReturn(Optional.empty());
-
-        movieService.getMovieByTitle(title, Locale.CANADA);
-
-    }
-
-    @Test
-    public void getMovieByTitleWithWrongTitleShouldThrowsExceptionWithMessage() {
-        exception.expect(MovieNotFoundException.class);
-        exception.expectMessage("wrong title of movie");
-
         String title = "wrong title";
         when(movieRepository.getMovieByTitle(title, Locale.CANADA)).thenReturn(Optional.empty());
 

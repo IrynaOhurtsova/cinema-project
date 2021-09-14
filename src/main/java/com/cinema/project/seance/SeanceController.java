@@ -24,7 +24,7 @@ public class SeanceController {
         Locale selectedLocale = (Locale) session.getAttribute("selectedLocale");
         List<SeanceWithMovieTitleDto> seances = seanceService.getAllSeances(selectedLocale);
         User user = (User) session.getAttribute("user");
-        ModelAndView modelAndView = mainPageViewProvider.getModelAmdViewForUser(user);
+        ModelAndView modelAndView = mainPageViewProvider.getModelAndViewForUser(user);
         modelAndView.addAttribute("seances", seances);
         return modelAndView;
     }
@@ -52,7 +52,7 @@ public class SeanceController {
         List<SeanceWithMovieTitleDto> seancesPerPage = seanceService.getSeancesPerPage(firstValue, selectedLocale);
 
         User user = (User) session.getAttribute("user");
-        ModelAndView modelAndView = paginationViewProvider.getModelAmdViewForUser(user);
+        ModelAndView modelAndView = paginationViewProvider.getModelAndViewForUser(user);
         modelAndView.addAttribute("pageAndFirstValue", pageAndFirstValue);
         modelAndView.addAttribute("seances", seancesPerPage);
         return modelAndView;

@@ -37,7 +37,7 @@ public class SeancesForUserProviderTest {
 
         when(modelByRole.get(expectedUser.getRole())).thenReturn(expected);
 
-        ModelAndView result = seancesForUserProvider.getModelAmdViewForUser(expectedUser);
+        ModelAndView result = seancesForUserProvider.getModelAndViewForUser(expectedUser);
 
         assertEquals(expected, result);
     }
@@ -48,7 +48,7 @@ public class SeancesForUserProviderTest {
 
         when(modelByRole.get(expectedUser.getRole())).thenAnswer(invocation -> Optional.empty());
 
-        ModelAndView result = seancesForUserProvider.getModelAmdViewForUser(expectedUser);
+        ModelAndView result = seancesForUserProvider.getModelAndViewForUser(expectedUser);
 
         assertEquals(defaultModelAndView,result);
     }
