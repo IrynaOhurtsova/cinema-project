@@ -8,10 +8,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class TicketRepository {
+
+    private static final Logger logger = Logger.getLogger(TicketRepository.class.getName());
 
     private final DataSource dataSource;
 
@@ -29,6 +32,7 @@ public class TicketRepository {
             return ticket;
         } catch (SQLException exception) {
             connection.rollback();
+            logger.severe(exception.getMessage());
             throw exception;
         } finally {
             connection.close();

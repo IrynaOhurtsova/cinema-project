@@ -29,15 +29,21 @@ import javax.sql.DataSource;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 public class ApplicationServletContainerInitializer implements ServletContainerInitializer {
+
+    private static final Logger logger = Logger.getLogger(ApplicationServletContainerInitializer.class.getName());
 
     @Override
     public void onStartup(Set<Class<?>> c, ServletContext ctx) {
         FrontServlet frontServlet = buildApplication();
+        logger.info("front servlet built --> " + frontServlet);
+
         ServletRegistration.Dynamic registration = ctx.addServlet("front", frontServlet);
         registration.setLoadOnStartup(1);
         registration.addMapping("/cinema/*");
+        logger.info("start front servlet --> " + frontServlet);
     }
 
     private FrontServlet buildApplication() {
@@ -46,11 +52,14 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         objectMapper.registerModule(new JSR310Module());
         ConfigLoader configLoader = new ConfigLoader(objectMapper);
         QueryValueResolver queryValueResolver = new QueryValueResolver(objectMapper);
+        logger.info("infra created --> " + objectMapper + configLoader + queryValueResolver);
+
 
         //datasource
         DataSource dataSource = new DataSourceConfig(configLoader).configureDataSource();
         LiquibaseStarter liquibaseStarter = new LiquibaseStarter(dataSource, configLoader);
         liquibaseStarter.updateDatabase();
+        logger.info("data source created --> " + dataSource + liquibaseStarter);
 
         //user
         UserRepository userRepository = new UserRepository(dataSource);
@@ -61,6 +70,7 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         modelAndViewHome.put(UserRole.CLIENT, ModelAndView.withView("/home/client.jsp"));
         modelAndViewHome.put(UserRole.ADMIN, ModelAndView.withView("/home/admin.jsp"));
         UserController userController = new UserController(userService, queryValueResolver, modelAndViewHome);
+        logger.info("user controller created --> " + userController);
 
         //movie
         Map<Locale, String> titleColumns = new HashMap<>();
@@ -68,6 +78,7 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         titleColumns.put(new Locale("uk"), "title_uk");
         MovieRepository movieRepository = new MovieRepository(dataSource, titleColumns);
         MovieService movieService = new MovieService(movieRepository);
+        logger.info("movie service created --> " + movieService);
 
         //seance providers
         Map<UserRole, ModelAndView> paginationViewMap = new HashMap<>();
@@ -79,9 +90,6 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         mainPageViewMap.put(UserRole.ADMIN, ModelAndView.withView("/mainpageforadmin.jsp"));
         SeancesForUserProvider mainPageViewProvider = new SeancesForUserProvider(mainPageViewMap, ModelAndView.withView("/mainpage.jsp"));
 
-        //ticket
-        TicketRepository ticketRepository = new TicketRepository(dataSource);
-
         //seance
         SeanceRepository seanceRepository = new SeanceRepository(dataSource);
         SeanceCreateValidatorConfig seanceCreateValidatorConfig = new SeanceCreateValidatorConfig(300, LocalTime.of(9, 0), LocalTime.of(22, 0));
@@ -89,11 +97,14 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         SeanceCreateDtoToSeanceMapper seanceCreateDtoToSeanceMapper = new SeanceCreateDtoToSeanceMapper(movieService);
         SeanceService seanceService = new SeanceService(seanceRepository, movieService, seanceCreateValidator, seanceCreateDtoToSeanceMapper, 10);
         SeanceController seanceController = new SeanceController(seanceService, queryValueResolver, paginationViewProvider, mainPageViewProvider);
+        logger.info("seance controller created --> " + seanceController);
 
         //ticket
+        TicketRepository ticketRepository = new TicketRepository(dataSource);
         TicketCreateValidator ticketCreateValidator = new TicketCreateValidator(seanceService);
         TicketService ticketService = new TicketService(ticketRepository, ticketCreateValidator, seanceService);
         TicketController ticketController = new TicketController(ticketService);
+        logger.info("ticket controller created --> " + ticketController);
 
         //web
         ExceptionHandlerConfig exceptionHandlerConfig = new ExceptionHandlerConfig();
@@ -130,7 +141,11 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
                         allTicketsByUserId, filterSeanceForUser, changeLocale, pagination, logout, paginationForAvailableSeances);
 
         RequestHandler requestHandler = new RequestHandler(controllerFunctionHolders, exceptionHandler, controllerNotFoundResponseSupplier);
+        logger.info("request handler created --> " + requestHandler);
+
         ResponseHandler<ModelAndView> responseHandler = new ModelAndViewHandler();
+        logger.info("response handler created --> " + responseHandler);
+
         return new FrontServlet(requestHandler, responseHandler);
 
     }

@@ -56,7 +56,7 @@ public class TicketRepositoryTest {
         when(extraPreparedStatement.executeUpdate()).thenReturn(1);
         doNothing().when(connection).commit();
 
-        assertEquals(expectedTicket,ticketRepository.createTicket(ticket));
+        assertEquals(expectedTicket, ticketRepository.createTicket(ticket));
     }
 
     @Test(expected = SQLException.class)

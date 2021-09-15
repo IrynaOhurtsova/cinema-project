@@ -42,7 +42,8 @@ public class UserRepository {
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
-            return new User(resultSet.getLong(1),user.getLogin(), user.getPassword(), user.getRole());
+            user.setId(resultSet.getLong(1));
+            return user;
         }
     }
 }

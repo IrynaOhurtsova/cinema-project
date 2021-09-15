@@ -5,8 +5,11 @@ import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class Language extends TagSupport {
+
+    private static final Logger logger = Logger.getLogger(Language.class.getName());
 
     private String message;
 
@@ -24,7 +27,7 @@ public class Language extends TagSupport {
             try {
                 pageContext.getOut().print(value);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.severe(e.getMessage());
             }
         }
         return SKIP_BODY;
