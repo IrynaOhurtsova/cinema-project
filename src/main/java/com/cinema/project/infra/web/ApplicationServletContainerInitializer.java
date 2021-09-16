@@ -1,9 +1,9 @@
 package com.cinema.project.infra.web;
 
-import com.cinema.project.SeanceAndMovie.SeanceAndMovieController;
-import com.cinema.project.SeanceAndMovie.SeanceAndMovieService;
-import com.cinema.project.TicketAndSeanceAndMovie.TicketAndSeanceAndMovieController;
-import com.cinema.project.TicketAndSeanceAndMovie.TicketAndSeanceAndMovieService;
+import com.cinema.project.seanceandmovie.SeanceAndMovieController;
+import com.cinema.project.seanceandmovie.SeanceAndMovieService;
+import com.cinema.project.ticketandseanceandmovie.TicketAndSeanceAndMovieController;
+import com.cinema.project.ticketandseanceandmovie.TicketAndSeanceAndMovieService;
 import com.cinema.project.infra.config.ConfigLoader;
 import com.cinema.project.infra.db.DataSourceConfig;
 import com.cinema.project.infra.db.LiquibaseStarter;

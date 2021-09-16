@@ -1,7 +1,7 @@
-package com.cinema.project.TicketAndSeanceAndMovie;
+package com.cinema.project.ticketandseanceandmovie;
 
-import com.cinema.project.SeanceAndMovie.SeanceAndMovie;
-import com.cinema.project.SeanceAndMovie.SeanceAndMovieService;
+import com.cinema.project.seanceandmovie.SeanceAndMovie;
+import com.cinema.project.seanceandmovie.SeanceAndMovieService;
 import com.cinema.project.ticket.Ticket;
 import com.cinema.project.ticket.TicketService;
 import com.cinema.project.user.User;

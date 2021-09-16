@@ -1,4 +1,4 @@
-package com.cinema.project.SeanceAndMovie;
+package com.cinema.project.seanceandmovie;
 
 import com.cinema.project.infra.web.response.ModelAndView;
 import com.cinema.project.seance.SeancesForUserProvider;

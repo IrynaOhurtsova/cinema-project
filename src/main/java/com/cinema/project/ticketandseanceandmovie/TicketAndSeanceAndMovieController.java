@@ -1,4 +1,4 @@
-package com.cinema.project.TicketAndSeanceAndMovie;
+package com.cinema.project.ticketandseanceandmovie;
 
 import com.cinema.project.infra.web.response.ModelAndView;
 import com.cinema.project.user.User;

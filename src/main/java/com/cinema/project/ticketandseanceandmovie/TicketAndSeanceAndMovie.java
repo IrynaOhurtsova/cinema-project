@@ -1,6 +1,6 @@
-package com.cinema.project.TicketAndSeanceAndMovie;
+package com.cinema.project.ticketandseanceandmovie;
 
-import com.cinema.project.SeanceAndMovie.SeanceAndMovie;
+import com.cinema.project.seanceandmovie.SeanceAndMovie;
 import com.cinema.project.ticket.Ticket;
 import lombok.Value;
 
