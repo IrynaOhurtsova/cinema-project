@@ -32,7 +32,7 @@ public class SeanceServiceTest {
 
     private final Seance expectedSeance = new Seance(1L, LocalDate.of(2, 2, 2), LocalTime.MIN, 1L, 50.0, 300, 300);
     private final Movie expectedMovie = new Movie(1L, "title");
-   // private final SeanceWithMovieTitleDto expectedSeanceDto = new SeanceWithMovieTitleDto(expectedSeance, expectedMovie);
+    // private final SeanceWithMovieTitleDto expectedSeanceDto = new SeanceWithMovieTitleDto(expectedSeance, expectedMovie);
     private final List<Seance> expectedSeancesList = Collections.singletonList(expectedSeance);
     private final List<Long> ids = Collections.singletonList(expectedSeance.getMovieId());
     private final Map<Long, Movie> moviesById = Collections.singletonMap(expectedMovie.getId(), expectedMovie);
@@ -41,7 +41,7 @@ public class SeanceServiceTest {
     @Before
     public void init() {
         Integer counterSeancesPerPage = 10;
-        seanceService = new SeanceService(seanceRepository,seanceCreateValidator, seanceCreateDtoToSeanceMapper, counterSeancesPerPage);
+        seanceService = new SeanceService(seanceRepository, seanceCreateValidator, seanceCreateDtoToSeanceMapper);
     }
 
 
@@ -169,12 +169,12 @@ public class SeanceServiceTest {
 //        assertEquals(expectedSeancesDtoList, result);
 //    }
 
-    @Test
-    public void findPageAndFirstValue() {
-        Map<Integer, Integer> expected = Collections.singletonMap(1, 0);
-
-        Map<Integer, Integer> result = seanceService.findPageAndFirstValue(expectedSeancesList);
-
-        assertEquals(expected, result);
-    }
+//    @Test
+//    public void findPageAndFirstValue() {
+//        Map<Integer, Integer> expected = Collections.singletonMap(1, 0);
+//
+//        Map<Integer, Integer> result = seanceService.findPageAndFirstValue(expectedSeancesList);
+//
+//        assertEquals(expected, result);
+//    }
 }

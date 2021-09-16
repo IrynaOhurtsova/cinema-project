@@ -49,7 +49,7 @@ public class SeanceAndMovieController {
         User user = (User) session.getAttribute("user");
         Locale selectedLocale = (Locale) session.getAttribute("selectedLocale");
 
-        Map<Integer, Integer> pageAndFirstValue = seanceAndMovieService.getPageAndFirstValue(user);
+        Map<Integer, Integer> pageAndFirstValue = seanceAndMovieService.getPageAndFirstValueForUser(user);
         List<SeanceAndMovie> seancesPerPage = seanceAndMovieService.getSeancesPerPageForUser(user, firstValue, selectedLocale);
 
         ModelAndView modelAndView = ModelAndView.withView("/pages/available.jsp");

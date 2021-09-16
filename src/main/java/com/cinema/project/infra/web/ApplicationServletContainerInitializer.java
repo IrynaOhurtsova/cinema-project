@@ -99,7 +99,7 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         SeanceCreateValidatorConfig seanceCreateValidatorConfig = new SeanceCreateValidatorConfig(300, LocalTime.of(9, 0), LocalTime.of(22, 0));
         SeanceCreateValidator seanceCreateValidator = new SeanceCreateValidator(seanceRepository, seanceCreateValidatorConfig);
         SeanceCreateDtoToSeanceMapper seanceCreateDtoToSeanceMapper = new SeanceCreateDtoToSeanceMapper(movieService);
-        SeanceService seanceService = new SeanceService(seanceRepository, seanceCreateValidator, seanceCreateDtoToSeanceMapper, 10);
+        SeanceService seanceService = new SeanceService(seanceRepository, seanceCreateValidator, seanceCreateDtoToSeanceMapper);
         SeanceController seanceController = new SeanceController(seanceService, queryValueResolver);
         logger.info("seance controller created --> " + seanceController);
 
@@ -111,7 +111,7 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         logger.info("ticket controller created --> " + ticketController);
 
         //seance - movie
-        SeanceAndMovieService seanceAndMovieService = new SeanceAndMovieService(seanceService, movieService, ticketService);
+        SeanceAndMovieService seanceAndMovieService = new SeanceAndMovieService(seanceService, movieService, ticketService, 10);
         SeanceAndMovieController seanceAndMovieController = new SeanceAndMovieController(seanceAndMovieService, paginationViewProvider, mainPageViewProvider);
 
         //ticket - seance - movie
