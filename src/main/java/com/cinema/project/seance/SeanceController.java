@@ -16,18 +16,6 @@ public class SeanceController {
 
     private final SeanceService seanceService;
     private final QueryValueResolver queryValueResolver;
-    private final SeancesForUserProvider paginationViewProvider;
-    private final SeancesForUserProvider mainPageViewProvider;
-
-    public ModelAndView allSeances(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Locale selectedLocale = (Locale) session.getAttribute("selectedLocale");
-        List<SeanceWithMovieTitleDto> seances = seanceService.getAllSeances(selectedLocale);
-        User user = (User) session.getAttribute("user");
-        ModelAndView modelAndView = mainPageViewProvider.getModelAndViewForUser(user);
-        modelAndView.addAttribute("seances", seances);
-        return modelAndView;
-    }
 
     public ModelAndView createSeance(HttpServletRequest request) {
         SeanceCreateDto seanceCreateDto = queryValueResolver.getObject(request, SeanceCreateDto.class);
@@ -42,21 +30,5 @@ public class SeanceController {
         seanceService.deleteSeanceById(Long.valueOf(id));
         return new ModelAndView("/cinema/mainpage", true);
     }
-
-    public ModelAndView pagination(HttpServletRequest request) {
-        String firstValue = request.getParameter("value");
-        HttpSession session = request.getSession();
-        Locale selectedLocale = (Locale) session.getAttribute("selectedLocale");
-
-        Map<Integer, Integer> pageAndFirstValue = seanceService.getPageAndFirstValue();
-        List<SeanceWithMovieTitleDto> seancesPerPage = seanceService.getSeancesPerPage(firstValue, selectedLocale);
-
-        User user = (User) session.getAttribute("user");
-        ModelAndView modelAndView = paginationViewProvider.getModelAndViewForUser(user);
-        modelAndView.addAttribute("pageAndFirstValue", pageAndFirstValue);
-        modelAndView.addAttribute("seances", seancesPerPage);
-        return modelAndView;
-    }
-
 
 }

@@ -44,7 +44,7 @@ public class UserController {
         return new ModelAndView("/home/client.jsp", true);
     }
 
-    public ModelAndView logout (HttpServletRequest request) {
+    public ModelAndView logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.removeAttribute("user");
         return new ModelAndView("", true);

@@ -1,5 +1,9 @@
 package com.cinema.project.infra.web;
 
+import com.cinema.project.SeanceAndMovie.SeanceAndMovieController;
+import com.cinema.project.SeanceAndMovie.SeanceAndMovieService;
+import com.cinema.project.TicketAndSeanceAndMovie.TicketAndSeanceAndMovieController;
+import com.cinema.project.TicketAndSeanceAndMovie.TicketAndSeanceAndMovieService;
 import com.cinema.project.infra.config.ConfigLoader;
 import com.cinema.project.infra.db.DataSourceConfig;
 import com.cinema.project.infra.db.LiquibaseStarter;
@@ -95,16 +99,24 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         SeanceCreateValidatorConfig seanceCreateValidatorConfig = new SeanceCreateValidatorConfig(300, LocalTime.of(9, 0), LocalTime.of(22, 0));
         SeanceCreateValidator seanceCreateValidator = new SeanceCreateValidator(seanceRepository, seanceCreateValidatorConfig);
         SeanceCreateDtoToSeanceMapper seanceCreateDtoToSeanceMapper = new SeanceCreateDtoToSeanceMapper(movieService);
-        SeanceService seanceService = new SeanceService(seanceRepository, movieService, seanceCreateValidator, seanceCreateDtoToSeanceMapper, 10);
-        SeanceController seanceController = new SeanceController(seanceService, queryValueResolver, paginationViewProvider, mainPageViewProvider);
+        SeanceService seanceService = new SeanceService(seanceRepository, seanceCreateValidator, seanceCreateDtoToSeanceMapper, 10);
+        SeanceController seanceController = new SeanceController(seanceService, queryValueResolver);
         logger.info("seance controller created --> " + seanceController);
 
         //ticket
         TicketRepository ticketRepository = new TicketRepository(dataSource);
         TicketCreateValidator ticketCreateValidator = new TicketCreateValidator(seanceService);
-        TicketService ticketService = new TicketService(ticketRepository, ticketCreateValidator, seanceService);
+        TicketService ticketService = new TicketService(ticketRepository, ticketCreateValidator);
         TicketController ticketController = new TicketController(ticketService);
         logger.info("ticket controller created --> " + ticketController);
+
+        //seance - movie
+        SeanceAndMovieService seanceAndMovieService = new SeanceAndMovieService(seanceService, movieService, ticketService);
+        SeanceAndMovieController seanceAndMovieController = new SeanceAndMovieController(seanceAndMovieService, paginationViewProvider, mainPageViewProvider);
+
+        //ticket - seance - movie
+        TicketAndSeanceAndMovieService ticketAndSeanceAndMovieService = new TicketAndSeanceAndMovieService(ticketService, seanceAndMovieService);
+        TicketAndSeanceAndMovieController ticketAndSeanceAndMovieController = new TicketAndSeanceAndMovieController(ticketAndSeanceAndMovieService);
 
         //web
         ExceptionHandlerConfig exceptionHandlerConfig = new ExceptionHandlerConfig();
@@ -114,7 +126,7 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         ControllerFunctionHolder createSeance =
                 new ControllerFunctionHolder("/seance/create", "GET", seanceController::createSeance);
         ControllerFunctionHolder allSeances =
-                new ControllerFunctionHolder("/mainpage", "GET", seanceController::allSeances);
+                new ControllerFunctionHolder("/mainpage", "GET", seanceAndMovieController::allSeances);
         ControllerFunctionHolder login =
                 new ControllerFunctionHolder("/user/login", "POST", userController::login);
         ControllerFunctionHolder deleteSeance =
@@ -124,17 +136,17 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         ControllerFunctionHolder createTicket =
                 new ControllerFunctionHolder("/ticket/buy", "POST", ticketController::createTicket);
         ControllerFunctionHolder allTicketsByUserId =
-                new ControllerFunctionHolder("/ticket/mytickets", "GET", ticketController::getAllTicketsByUserId);
+                new ControllerFunctionHolder("/ticket/mytickets", "GET", ticketAndSeanceAndMovieController::getAllTicketsByUserId);
         ControllerFunctionHolder filterSeanceForUser =
-                new ControllerFunctionHolder("/seance/available", "GET", ticketController::getSeancesForUserByTickets);
+                new ControllerFunctionHolder("/seance/available", "GET", seanceAndMovieController::getSeancesForUserByTickets);
         ControllerFunctionHolder changeLocale =
                 new ControllerFunctionHolder("/user/change/language", "GET", userController::changeLocale);
         ControllerFunctionHolder pagination =
-                new ControllerFunctionHolder("/seance/page", "GET", seanceController::pagination);
+                new ControllerFunctionHolder("/seance/page", "GET", seanceAndMovieController::pagination);
         ControllerFunctionHolder logout =
                 new ControllerFunctionHolder("/user/logout", "GET", userController::logout);
         ControllerFunctionHolder paginationForAvailableSeances =
-                new ControllerFunctionHolder("/seance/available/page", "GET", ticketController::paginationForAvailableSeances);
+                new ControllerFunctionHolder("/seance/available/page", "GET", seanceAndMovieController::paginationForAvailableSeances);
 
         List<ControllerFunctionHolder> controllerFunctionHolders =
                 Arrays.asList(login, allSeances, createSeance, deleteSeance, registerUser, createTicket,
