@@ -17,8 +17,7 @@ import java.util.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SeanceRepositoryTest {
@@ -88,12 +87,6 @@ public class SeanceRepositoryTest {
 
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString(), anyInt())).thenReturn(preparedStatement);
-        doNothing().when(preparedStatement).setDate(1, Date.valueOf(expectedSeance.getDate()));
-        doNothing().when(preparedStatement).setTime(2, Time.valueOf(expectedSeance.getTime()));
-        doNothing().when(preparedStatement).setLong(3, expectedSeance.getMovieId());
-        doNothing().when(preparedStatement).setDouble(4, expectedSeance.getPrice());
-        doNothing().when(preparedStatement).setInt(5, expectedSeance.getSeatingCapacity());
-        doNothing().when(preparedStatement).setInt(6, expectedSeance.getFreePlaces());
         when(preparedStatement.executeUpdate()).thenReturn(1);
         when(preparedStatement.getGeneratedKeys()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true);
@@ -102,14 +95,19 @@ public class SeanceRepositoryTest {
         Seance result = seanceRepository.createSeance(seance);
 
         assertEquals(expectedSeance, result);
+
+        verify(preparedStatement, times(1)).setDate(1, Date.valueOf(expectedSeance.getDate()));
+        verify(preparedStatement, times(1)).setTime(2, Time.valueOf(expectedSeance.getTime()));
+        verify(preparedStatement, times(1)).setLong(3, expectedSeance.getMovieId());
+        verify(preparedStatement, times(1)).setDouble(4, expectedSeance.getPrice());
+        verify(preparedStatement, times(1)).setInt(5, expectedSeance.getSeatingCapacity());
+        verify(preparedStatement, times(1)).setInt(6, expectedSeance.getFreePlaces());
     }
 
     @Test
     public void findSeanceByDateAndTime() throws Exception {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        doNothing().when(preparedStatement).setDate(1, Date.valueOf(expectedSeance.getDate()));
-        doNothing().when(preparedStatement).setTime(2, Time.valueOf(expectedSeance.getTime()));
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true);
         when(resultSet.getLong("id")).thenReturn(expectedSeance.getId());
@@ -123,27 +121,30 @@ public class SeanceRepositoryTest {
         Optional<Seance> result = seanceRepository.findSeanceByDateAndTime(expectedSeance.getDate(), expectedSeance.getTime());
 
         assertTrue(result.isPresent());
+
+        verify(preparedStatement, times(1)).setDate(1, Date.valueOf(expectedSeance.getDate()));
+        verify(preparedStatement, times(1)).setTime(2, Time.valueOf(expectedSeance.getTime()));
     }
 
     @Test
     public void findSeanceByDateAndTimeShouldReturnEmptyOptional() throws Exception {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        doNothing().when(preparedStatement).setDate(1, Date.valueOf(expectedSeance.getDate()));
-        doNothing().when(preparedStatement).setTime(2, Time.valueOf(expectedSeance.getTime()));
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(false);
 
         Optional<Seance> result = seanceRepository.findSeanceByDateAndTime(expectedSeance.getDate(), expectedSeance.getTime());
 
         assertFalse(result.isPresent());
+
+        verify(preparedStatement, times(1)).setDate(1, Date.valueOf(expectedSeance.getDate()));
+        verify(preparedStatement, times(1)).setTime(2, Time.valueOf(expectedSeance.getTime()));
     }
 
     @Test
     public void findSeanceByID() throws Exception {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        doNothing().when(preparedStatement).setLong(1, expectedSeance.getId());
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true);
         when(resultSet.getLong("id")).thenReturn(expectedSeance.getId());
@@ -157,33 +158,35 @@ public class SeanceRepositoryTest {
         Optional<Seance> result = seanceRepository.findSeanceByID(expectedSeance.getId());
 
         assertTrue(result.isPresent());
+
+        verify(preparedStatement, times(1)).setLong(1, expectedSeance.getId());
     }
 
     @Test
     public void findSeanceByIdShouldReturnEmptyOptional() throws Exception {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        doNothing().when(preparedStatement).setLong(1, expectedSeance.getId());
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(false);
 
         Optional<Seance> result = seanceRepository.findSeanceByID(expectedSeance.getId());
 
         assertFalse(result.isPresent());
+
+        verify(preparedStatement, times(1)).setLong(1, expectedSeance.getId());
     }
 
-
-    //Should I check SQLException?
     @Test
     public void deleteSeanceById() throws Exception {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        doNothing().when(preparedStatement).setLong(1, expectedSeance.getId());
         when(preparedStatement.executeUpdate()).thenReturn(1);
 
         Seance result = seanceRepository.deleteSeanceById(expectedSeance);
 
         assertEquals(expectedSeance, result);
+
+        verify(preparedStatement, times(1)).setLong(1, expectedSeance.getId());
     }
 
     @Test
@@ -193,7 +196,6 @@ public class SeanceRepositoryTest {
         assertTrue(seancesByIds.isEmpty());
     }
 
-    //Should I check SQLException?
     @Test
     public void getSeancesByIds() throws Exception {
         List<Seance> expected = Collections.singletonList(expectedSeance);
@@ -219,7 +221,6 @@ public class SeanceRepositoryTest {
         assertEquals(expected, result);
     }
 
-    //Should I check SQLException?
     @Test
     public void getSeancesPerPage() throws Exception {
         List<Seance> expected = Collections.singletonList(expectedSeance);
@@ -229,8 +230,6 @@ public class SeanceRepositoryTest {
 
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        doNothing().when(preparedStatement).setInt(anyInt(), anyInt());
-        doNothing().when(preparedStatement).setInt(anyInt(), anyInt());
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenAnswer(invocation -> nextAnswers.remove());
         when(resultSet.getLong("id")).thenReturn(expectedSeance.getId());
@@ -245,6 +244,8 @@ public class SeanceRepositoryTest {
 
         assertTrue(result.contains(expectedSeance));
         assertEquals(expected, result);
+
+        verify(preparedStatement, times(2)).setInt(anyInt(), anyInt());
     }
 
     @Test
@@ -263,8 +264,6 @@ public class SeanceRepositoryTest {
 
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        doNothing().when(preparedStatement).setInt(anyInt(), anyInt());
-        doNothing().when(preparedStatement).setInt(anyInt(), anyInt());
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenAnswer(invocation -> nextAnswers.remove());
         when(resultSet.getLong("id")).thenReturn(expectedSeance.getId());
@@ -279,5 +278,7 @@ public class SeanceRepositoryTest {
 
         assertTrue(result.contains(expectedSeance));
         assertEquals(expected, result);
+
+        verify(preparedStatement, times(2)).setInt(anyInt(), anyInt());
     }
 }

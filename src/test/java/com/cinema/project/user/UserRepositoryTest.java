@@ -15,8 +15,7 @@ import java.sql.ResultSet;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserRepositoryTest {
@@ -40,7 +39,6 @@ public class UserRepositoryTest {
 
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        doNothing().when(preparedStatement).setString(anyInt(), anyString());
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true);
         when(resultSet.getLong("id")).thenReturn(user.getId());
@@ -49,6 +47,8 @@ public class UserRepositoryTest {
         when(resultSet.getString("role")).thenReturn(String.valueOf(user.getRole()));
 
         assertTrue(userRepository.getUserByLogin(user.getLogin()).isPresent());
+
+        verify(preparedStatement, times(1)).setString(anyInt(), anyString());
     }
 
     @Test
@@ -60,14 +60,15 @@ public class UserRepositoryTest {
 
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString(), anyInt())).thenReturn(preparedStatement);
-        doNothing().when(preparedStatement).setString(1, userWithoutId.getLogin());
-        doNothing().when(preparedStatement).setString(2, userWithoutId.getPassword());
-        doNothing().when(preparedStatement).setString(3, String.valueOf(userWithoutId.getRole()));
         when(preparedStatement.executeUpdate()).thenReturn(1);
         when(preparedStatement.getGeneratedKeys()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true);
         when(resultSet.getLong(1)).thenReturn(user.getId());
 
         assertEquals(user, userRepository.registerClient(userWithoutId));
+
+        verify(preparedStatement, times(1)).setString(1, userWithoutId.getLogin());
+        verify(preparedStatement, times(1)).setString(2, userWithoutId.getPassword());
+        verify(preparedStatement, times(1)).setString(3, String.valueOf(userWithoutId.getRole()));
     }
 }

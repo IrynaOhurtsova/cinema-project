@@ -19,7 +19,7 @@ public class TicketAndSeanceAndMovieService {
     private final SeanceAndMovieService seanceAndMovieService;
 
     public List<TicketAndSeanceAndMovie> getTicketsForUser(User user, Locale locale) {
-        List<Ticket> tickets = ticketService.getTicketsForUser(user, locale);
+        List<Ticket> tickets = ticketService.getTicketsForUser(user);
         List<Long> ids = tickets.stream()
                 .map(Ticket::getSeanceId)
                 .collect(Collectors.toList());

@@ -36,10 +36,6 @@ public class TicketControllerTest {
 
     private final User user = new User(1L, "", "", UserRole.CLIENT);
     private final Ticket ticket = new Ticket(1L, 1L, 1L);
-    private final Seance expectedSeance = new Seance(1L, LocalDate.of(2, 2, 2), LocalTime.MIN, 1L, 50.0, 300, 300);
-    private final Movie expectedMovie = new Movie(1L, "title");
-    private final SeanceWithMovieTitleDto expectedSeanceDto = new SeanceWithMovieTitleDto(expectedSeance, expectedMovie);
-    private final List<SeanceWithMovieTitleDto> expectedSeanceDtoList = Collections.singletonList(expectedSeanceDto);
 
     @Test
     public void createTicket() {
@@ -52,52 +48,4 @@ public class TicketControllerTest {
 
         assertEquals(expected, ticketController.createTicket(httpServletRequest));
     }
-
-//    @Test
-//    public void getAllTicketsByUserId() {
-//        List<TicketWithSeanceDto> ticketWithSeanceDtos = Collections.singletonList(new TicketWithSeanceDto(ticket, expectedSeanceDto));
-//        ModelAndView expected = ModelAndView.withView("/ticket/mytickets.jsp");
-//        expected.addAttribute("tickets", ticketWithSeanceDtos);
-//
-//
-//        when(httpServletRequest.getSession()).thenReturn(session);
-//        when(session.getAttribute("user")).thenReturn(user);
-//        when(session.getAttribute("selectedLocale")).thenReturn(Locale.CANADA);
-//        when(ticketService.getTicketsForUserDto(user,Locale.CANADA)).thenReturn(ticketWithSeanceDtos);
-//
-//        assertEquals(expected, ticketController.getAllTicketsByUserId(httpServletRequest));
-//
-//    }
-
-//    @Test
-//    public void getSeancesForUserByTickets() {
-//        ModelAndView expected = ModelAndView.withView("/seance/available.jsp");
-//        expected.addAttribute("seances", expectedSeanceDtoList);
-//
-//
-//        when(httpServletRequest.getSession()).thenReturn(session);
-//        when(session.getAttribute("user")).thenReturn(user);
-//        when(session.getAttribute("selectedLocale")).thenReturn(Locale.CANADA);
-//        when(ticketService.getSeanceForUserByTickets(user,Locale.CANADA)).thenReturn(expectedSeanceDtoList);
-//
-//        assertEquals(expected, ticketController.getSeancesForUserByTickets(httpServletRequest));
-//    }
-//
-//    @Test
-//    public void paginationForAvailableSeances() {
-//        Map<Integer, Integer> pageAndFirstValue = Collections.singletonMap(1, 0);
-//
-//        ModelAndView expected = ModelAndView.withView("/pages/available.jsp");
-//        expected.addAttribute("pageAndFirstValue", pageAndFirstValue);
-//        expected.addAttribute("seances", expectedSeanceDtoList);
-//
-//        when(httpServletRequest.getParameter(anyString())).thenReturn("0");
-//        when(httpServletRequest.getSession()).thenReturn(session);
-//        when(session.getAttribute("selectedLocale")).thenReturn(Locale.CANADA);
-//        when(ticketService.getPageAndFirstValue(user)).thenReturn(pageAndFirstValue);
-//        when(ticketService.getSeancesPerPage(user,"0", Locale.CANADA)).thenReturn(expectedSeanceDtoList);
-//        when(session.getAttribute("user")).thenReturn(user);
-//
-//        assertEquals(expected, ticketController.paginationForAvailableSeances(httpServletRequest));
-//    }
 }

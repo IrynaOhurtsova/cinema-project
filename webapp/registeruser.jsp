@@ -13,16 +13,25 @@
                           <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </head>
     <body>
+
+
+    <p><a href="/app">
+        <lang:print message="Login_page"/>
+    </p></a>
+
         <p>
             <lang:print message="Create_login_and_password"/>
         </p>
         <form method="POST" action="/app/cinema/user/register">
               <div class="container">
                 <label for="login"><b><lang:print message="Login"/></b></label>
-                <input type="text" placeholder=<lang:print message="Login"/> name="login" required>
+                <input type="text" pattern="[a-zA-Z]{4,20}" title="Enter an login consisting of 4-20 letters"
+                 placeholder=<lang:print message="Login" /> name="login" required>
 
                 <label for="password"><b><lang:print message="Password"/></b></label>
-                <input type="password" placeholder=<lang:print message="Password"/> name="password" required>
+                <input type="password" pattern="(?=.*\d)(?=.*[a-zA-Z]).{8,}"
+                title="Must contain at least one number and uppercase or lowercase letters, and at least 8 or more characters"
+                placeholder=<lang:print message="Password"/> name="password" required>
 
                 <button type="submit"><lang:print message="To_register"/></button></form>
 

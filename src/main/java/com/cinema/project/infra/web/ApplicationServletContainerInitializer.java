@@ -56,14 +56,11 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         objectMapper.registerModule(new JSR310Module());
         ConfigLoader configLoader = new ConfigLoader(objectMapper);
         QueryValueResolver queryValueResolver = new QueryValueResolver(objectMapper);
-        logger.info("infra created --> " + objectMapper + configLoader + queryValueResolver);
-
 
         //datasource
         DataSource dataSource = new DataSourceConfig(configLoader).configureDataSource();
         LiquibaseStarter liquibaseStarter = new LiquibaseStarter(dataSource, configLoader);
         liquibaseStarter.updateDatabase();
-        logger.info("data source created --> " + dataSource + liquibaseStarter);
 
         //user
         UserRepository userRepository = new UserRepository(dataSource);
@@ -74,7 +71,6 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         modelAndViewHome.put(UserRole.CLIENT, ModelAndView.withView("/home/client.jsp"));
         modelAndViewHome.put(UserRole.ADMIN, ModelAndView.withView("/home/admin.jsp"));
         UserController userController = new UserController(userService, queryValueResolver, modelAndViewHome);
-        logger.info("user controller created --> " + userController);
 
         //movie
         Map<Locale, String> titleColumns = new HashMap<>();
@@ -82,7 +78,6 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         titleColumns.put(new Locale("uk"), "title_uk");
         MovieRepository movieRepository = new MovieRepository(dataSource, titleColumns);
         MovieService movieService = new MovieService(movieRepository);
-        logger.info("movie service created --> " + movieService);
 
         //seance providers
         Map<UserRole, ModelAndView> paginationViewMap = new HashMap<>();
@@ -101,14 +96,12 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         SeanceCreateDtoToSeanceMapper seanceCreateDtoToSeanceMapper = new SeanceCreateDtoToSeanceMapper(movieService);
         SeanceService seanceService = new SeanceService(seanceRepository, seanceCreateValidator, seanceCreateDtoToSeanceMapper);
         SeanceController seanceController = new SeanceController(seanceService, queryValueResolver);
-        logger.info("seance controller created --> " + seanceController);
 
         //ticket
         TicketRepository ticketRepository = new TicketRepository(dataSource);
         TicketCreateValidator ticketCreateValidator = new TicketCreateValidator(seanceService);
         TicketService ticketService = new TicketService(ticketRepository, ticketCreateValidator);
         TicketController ticketController = new TicketController(ticketService);
-        logger.info("ticket controller created --> " + ticketController);
 
         //seance - movie
         SeanceAndMovieService seanceAndMovieService = new SeanceAndMovieService(seanceService, movieService, ticketService, 10);
@@ -153,10 +146,7 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
                         allTicketsByUserId, filterSeanceForUser, changeLocale, pagination, logout, paginationForAvailableSeances);
 
         RequestHandler requestHandler = new RequestHandler(controllerFunctionHolders, exceptionHandler, controllerNotFoundResponseSupplier);
-        logger.info("request handler created --> " + requestHandler);
-
         ResponseHandler<ModelAndView> responseHandler = new ModelAndViewHandler();
-        logger.info("response handler created --> " + responseHandler);
 
         return new FrontServlet(requestHandler, responseHandler);
 

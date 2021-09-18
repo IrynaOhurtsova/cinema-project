@@ -41,6 +41,12 @@ public class SeanceAndMovieService {
                         seance -> new SeanceAndMovie(seance, moviesById.get(seance.getMovieId()))));
     }
 
+    public List<SeanceAndMovie> getSeanceForUserByTickets(User user, Locale locale) {
+        List<Long> seanceIds = ticketService.getSeancesIdsByTickets(user);
+        Map<Long, SeanceAndMovie> seancesByIds = getSeancesByIds(seanceIds, locale);
+        return new ArrayList<>(seancesByIds.values());
+    }
+
     public List<SeanceAndMovie> getSeancesPerPage(String firstValue, Locale locale) {
         List<Seance> seancesPerPage = seanceService.getSeancesPerPage(counterSeancesPerPage, firstValue);
 
@@ -49,15 +55,14 @@ public class SeanceAndMovieService {
         return getSeancesAndMovie(moviesById, seancesPerPage);
     }
 
-    public List<SeanceAndMovie> getSeanceForUserByTickets(User user, Locale locale) {
-        List<Long> seanceIds = ticketService.getSeancesIdsByTickets(user);
-        Map<Long, SeanceAndMovie> seancesByIds = getSeancesByIds(seanceIds, locale);
-        return new ArrayList<>(seancesByIds.values());
-    }
-
     public List<SeanceAndMovie> getSeancesPerPageForUser(User user, String firstValue, Locale locale) {
         List<Long> ids = ticketService.getSeancesIdsByTickets(user);
-        return getSeancesPerPageByIds(ids, firstValue, locale);
+
+        List<Seance> seancesPerPage = seanceService.getSeancesPerPageByIds(counterSeancesPerPage, ids, firstValue);
+
+        Map<Long, Movie> moviesById = getMoviesById(seancesPerPage, locale);
+
+        return getSeancesAndMovie(moviesById, seancesPerPage);
     }
 
     public Map<Integer, Integer> getPageAndFirstValue() {
@@ -76,14 +81,6 @@ public class SeanceAndMovieService {
         return IntStream.range(0, countOfPage)
                 .boxed()
                 .collect(Collectors.toMap(page -> page + 1, firstValue -> firstValue * counterSeancesPerPage));
-    }
-
-    private List<SeanceAndMovie> getSeancesPerPageByIds(List<Long> ids, String firstValue, Locale locale) {
-        List<Seance> seancesPerPage = seanceService.getSeancesPerPageByIds(counterSeancesPerPage, ids, firstValue);
-
-        Map<Long, Movie> moviesById = getMoviesById(seancesPerPage, locale);
-
-        return getSeancesAndMovie(moviesById, seancesPerPage);
     }
 
     private Map<Long, Movie> getMoviesById(List<Seance> seances, Locale locale) {

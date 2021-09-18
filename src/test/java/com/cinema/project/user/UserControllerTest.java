@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest {
@@ -58,6 +58,8 @@ public class UserControllerTest {
         when(httpServletRequest.getSession(false)).thenReturn(session);
 
         assertEquals(modelAndView, userController.changeLocale(httpServletRequest));
+
+        verify(session, times(1)).setAttribute(anyString(), anyObject());
     }
 
     @Test
@@ -70,6 +72,8 @@ public class UserControllerTest {
         when(modelAndViewHome.get(user.getRole())).thenReturn(modelAndView);
 
         assertEquals(modelAndView, userController.login(httpServletRequest));
+
+        verify(session, times(1)).setAttribute("user", user);
     }
 
     @Test
@@ -81,6 +85,8 @@ public class UserControllerTest {
         when(httpServletRequest.getSession(false)).thenReturn(session);
 
         assertEquals(modelAndView, userController.registerUser(httpServletRequest));
+
+        verify(session, times(1)).setAttribute("user", user);
     }
 
     @Test
@@ -88,5 +94,7 @@ public class UserControllerTest {
         when(httpServletRequest.getSession()).thenReturn(session);
 
         assertEquals(new ModelAndView("", true), userController.logout(httpServletRequest));
+
+        verify(session, times(1)).removeAttribute("user");
     }
 }

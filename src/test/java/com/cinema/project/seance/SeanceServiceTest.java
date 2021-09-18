@@ -5,6 +5,7 @@ import com.cinema.project.movie.MovieService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -14,6 +15,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -22,39 +24,23 @@ public class SeanceServiceTest {
     @Mock
     private SeanceRepository seanceRepository;
     @Mock
-    private MovieService movieService;
-    @Mock
     private SeanceCreateValidator seanceCreateValidator;
     @Mock
     private SeanceCreateDtoToSeanceMapper seanceCreateDtoToSeanceMapper;
-
+    @InjectMocks
     private SeanceService seanceService;
 
     private final Seance expectedSeance = new Seance(1L, LocalDate.of(2, 2, 2), LocalTime.MIN, 1L, 50.0, 300, 300);
     private final Movie expectedMovie = new Movie(1L, "title");
-    // private final SeanceWithMovieTitleDto expectedSeanceDto = new SeanceWithMovieTitleDto(expectedSeance, expectedMovie);
     private final List<Seance> expectedSeancesList = Collections.singletonList(expectedSeance);
     private final List<Long> ids = Collections.singletonList(expectedSeance.getMovieId());
-    private final Map<Long, Movie> moviesById = Collections.singletonMap(expectedMovie.getId(), expectedMovie);
-    //private final List<SeanceWithMovieTitleDto> expectedSeancesDtoList = Collections.singletonList(expectedSeanceDto);
 
-    @Before
-    public void init() {
-        Integer counterSeancesPerPage = 10;
-        seanceService = new SeanceService(seanceRepository, seanceCreateValidator, seanceCreateDtoToSeanceMapper);
+    @Test
+    public void getAllSeances() {
+        when(seanceRepository.getAllSeances()).thenReturn(expectedSeancesList);
+
+        assertEquals(expectedSeancesList, seanceService.getAllSeances());
     }
-
-
-//    @Test
-//    public void getAllSeances() {
-//        when(seanceRepository.getAllSeances()).thenReturn(expectedSeancesList);
-//        when(movieService.getMoviesById(ids, Locale.CANADA)).thenReturn(moviesById);
-//
-//        List<SeanceWithMovieTitleDto> result = seanceService.getAllSeancesDto(Locale.CANADA);
-//
-//        assertTrue(result.contains(expectedSeanceDto));
-//        assertEquals(expectedSeancesDtoList, result);
-//    }
 
     @Test
     public void createSeance() {
@@ -101,18 +87,6 @@ public class SeanceServiceTest {
         seanceService.deleteSeanceById(expectedSeance.getId());
     }
 
-//    @Test
-//    public void getSeancesByIds() {
-//        Map<Long, SeanceWithMovieTitleDto> expected = Collections.singletonMap(expectedSeanceDto.getId(), expectedSeanceDto);
-//
-//        when(seanceRepository.getSeancesByIds(ids)).thenReturn(expectedSeancesList);
-//        when(movieService.getMoviesById(ids, Locale.CANADA)).thenReturn(moviesById);
-//
-//        Map<Long, SeanceWithMovieTitleDto> result = seanceService.getSeancesByIds(ids, Locale.CANADA);
-//
-//        assertEquals(expected, result);
-//    }
-
     @Test
     public void testGetSeancesByIds() {
         when(seanceRepository.getSeancesByIds(ids)).thenReturn(expectedSeancesList);
@@ -138,43 +112,18 @@ public class SeanceServiceTest {
         seanceService.getSeanceById(expectedSeance.getId());
     }
 
-//    @Test
-//    public void getSeancesPerPage() {
-//        when(seanceRepository.getSeancesPerPage(anyInt(), anyInt())).thenReturn(expectedSeancesList);
-//        when(movieService.getMoviesById(ids, Locale.CANADA)).thenReturn(moviesById);
-//
-//        List<SeanceWithMovieTitleDto> result = seanceService.getSeancesPerPageDto("0", Locale.CANADA);
-//
-//        assertEquals(expectedSeancesDtoList, result);
-//    }
+    @Test
+    public void getSeancesPerPage() {
+        when(seanceRepository.getSeancesPerPage(anyInt(), anyInt())).thenReturn(expectedSeancesList);
 
-//    @Test
-//    public void getPageAndFirstValue() {
-//        when(seanceRepository.getAllSeances()).thenReturn(expectedSeancesList);
-//
-//        Map<Integer, Integer> expected = Collections.singletonMap(1, 0);
-//
-//        Map<Integer, Integer> result = seanceService.getPageAndFirstValue();
-//
-//        assertEquals(expected, result);
-//    }
-//
-//    @Test
-//    public void getSeancesPerPageByIds() {
-//        when(seanceRepository.getSeancesPerPageByIds(ids, 10, 0)).thenReturn(expectedSeancesList);
-//        when(movieService.getMoviesById(ids, Locale.CANADA)).thenReturn(moviesById);
-//
-//        List<SeanceWithMovieTitleDto> result = seanceService.getSeancesPerPageByIdsDto(ids, "0", Locale.CANADA);
-//
-//        assertEquals(expectedSeancesDtoList, result);
-//    }
+        assertEquals(expectedSeancesList, seanceService.getSeancesPerPage(10, "0"));
+    }
 
-//    @Test
-//    public void findPageAndFirstValue() {
-//        Map<Integer, Integer> expected = Collections.singletonMap(1, 0);
-//
-//        Map<Integer, Integer> result = seanceService.findPageAndFirstValue(expectedSeancesList);
-//
-//        assertEquals(expected, result);
-//    }
+    @Test
+    public void getSeancesPerPageByIds() {
+        when(seanceRepository.getSeancesPerPageByIds(anyList(), anyInt(), anyInt())).thenReturn(expectedSeancesList);
+
+        assertEquals(expectedSeancesList, seanceService.getSeancesPerPageByIds(10, ids, "0"));
+    }
+
 }

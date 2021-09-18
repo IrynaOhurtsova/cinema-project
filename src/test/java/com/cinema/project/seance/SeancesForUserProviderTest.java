@@ -50,6 +50,6 @@ public class SeancesForUserProviderTest {
 
         ModelAndView result = seancesForUserProvider.getModelAndViewForUser(expectedUser);
 
-        assertEquals(defaultModelAndView,result);
+        assertEquals(defaultModelAndView, result);
     }
 }

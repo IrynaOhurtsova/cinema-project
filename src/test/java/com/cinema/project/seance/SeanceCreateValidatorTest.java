@@ -20,8 +20,9 @@ public class SeanceCreateValidatorTest {
     @Mock
     private SeanceRepository seanceRepository;
 
-    SeanceCreateValidatorConfig seanceCreateValidatorConfig = new SeanceCreateValidatorConfig(300, LocalTime.of(9, 0), LocalTime.of(22, 0));
     private SeanceCreateValidator seanceCreateValidator;
+
+    SeanceCreateValidatorConfig seanceCreateValidatorConfig = new SeanceCreateValidatorConfig(300, LocalTime.of(9, 0), LocalTime.of(22, 0));
 
     @Before
     public void init() {

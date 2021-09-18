@@ -14,6 +14,13 @@
     </head>
     <body>
 
+   	<p><a href="/app/cinema/user/logout">
+       <lang:print message="Log_out"/>
+    </p></a>
+    <p><a href="/app/home/client.jsp">
+        <lang:print message="Home_page"/>
+    </p></a>
+
     <button onclick="sortTable(0)"><lang:print message="Sort_date"/></button>
     <button onclick="sortTable(2)"><lang:print message="Sort_title"/></button>
     <button onclick="sortTable(3)"><lang:print message="Sort_price"/></button>

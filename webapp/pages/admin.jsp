@@ -14,6 +14,13 @@
     </head>
     <body>
 
+   	<p><a href="/app/cinema/user/logout">
+       <lang:print message="Log_out"/>
+    </p></a>
+    <p><a href="/app/home/admin.jsp">
+        <lang:print message="Home_page"/>
+    </p></a>
+
    <table>
         <tr>
             <th><lang:print message="Date"/></th>

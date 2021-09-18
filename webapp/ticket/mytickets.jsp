@@ -13,6 +13,12 @@
                           <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </head>
     <body>
+   	<p><a href="/app/cinema/user/logout">
+       <lang:print message="Log_out"/>
+    </p></a>
+    <p><a href="/app/home/client.jsp">
+        <lang:print message="Home_page"/>
+    </p></a>
    <table>
         <tr>
             <th><lang:print message="Ticket_ID"/></th>
@@ -31,6 +37,7 @@
    			</tr>
    		</c:forEach>
    	</table>
+
 
    	<style>
     table {

@@ -16,8 +16,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MovieRepositoryTest {
@@ -72,7 +71,6 @@ public class MovieRepositoryTest {
         when(titlesMap.get(Locale.CANADA)).thenReturn("colunmName");
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        preparedStatement.setString(1, title);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true);
         when(resultSet.getLong("id")).thenReturn(expectedMovie.getId());
@@ -81,6 +79,8 @@ public class MovieRepositoryTest {
         Optional<Movie> movieByTitle = movieRepository.getMovieByTitle(title, Locale.CANADA);
 
         assertTrue(movieByTitle.isPresent());
+
+        verify(preparedStatement, times(1)).setString(1, title);
     }
 
     @Test
@@ -89,13 +89,14 @@ public class MovieRepositoryTest {
         when(titlesMap.get(Locale.CANADA)).thenReturn("colunmName");
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        preparedStatement.setString(1, title);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(false);
 
         Optional<Movie> movieByTitle = movieRepository.getMovieByTitle(title, Locale.CANADA);
 
         assertFalse(movieByTitle.isPresent());
+
+        verify(preparedStatement, times(1)).setString(1, title);
     }
 
 }

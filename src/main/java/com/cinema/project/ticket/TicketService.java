@@ -20,7 +20,7 @@ public class TicketService {
         return ticketRepository.createTicket(ticketCreateValidator.validate(ticket));
     }
 
-    public List<Ticket> getTicketsForUser(User user, Locale locale) {
+    public List<Ticket> getTicketsForUser(User user) {
         return ticketRepository.getTicketsByUserId(user.getId());
     }
 

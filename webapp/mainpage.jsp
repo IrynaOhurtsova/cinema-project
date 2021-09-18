@@ -14,6 +14,10 @@
     </head>
     <body>
 
+    <p><a href="/app">
+        <lang:print message="Login_page"/>
+    </p></a>
+
     <form method="GET" action="/app/cinema/seance/page">
         <input class="page-item" type="hidden" name="value" value="0">
         <button class="page-link" type="submit"><lang:print message="Display_by"/></button>
