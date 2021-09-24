@@ -19,7 +19,7 @@ public class MovieService {
                 .collect(Collectors.toMap(Movie::getId, Function.identity()));
     }
 
-    public Movie getMovieByTitle(String title, Locale locale) throws MovieNotFoundException {
+    public Movie getMovieByTitle(String title, Locale locale) {
         return movieRepository.getMovieByTitle(title, locale)
                 .orElseThrow(() -> new MovieNotFoundException("wrong title of movie"));
     }

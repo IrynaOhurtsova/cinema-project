@@ -19,7 +19,7 @@ public class ClientRegisterValidatorTest {
     @InjectMocks
     private ClientRegisterValidator clientRegisterValidator;
 
-    private final User user = new User(1L, "", "", UserRole.CLIENT);
+    private final User user = new User(1L, "ivanov", "ivanoV11", UserRole.CLIENT);
 
     @Test
     public void validate() {

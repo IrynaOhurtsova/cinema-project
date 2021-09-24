@@ -25,12 +25,12 @@
         <form method="POST" action="/app/cinema/user/register">
               <div class="container">
                 <label for="login"><b><lang:print message="Login"/></b></label>
-                <input type="text" pattern="[a-zA-Z]{4,20}" title="Enter an login consisting of 4-20 letters"
+                <input type="text" pattern="[a-zA-Z]{4,20}" title="<lang:print message="invalid_login"/>"
                  placeholder=<lang:print message="Login" /> name="login" required>
 
                 <label for="password"><b><lang:print message="Password"/></b></label>
-                <input type="password" pattern="(?=.*\d)(?=.*[a-zA-Z]).{8,}"
-                title="Must contain at least one number and uppercase or lowercase letters, and at least 8 or more characters"
+                <input type="password" pattern="(?=.*[0-9])(?=.*[a-zA-Z])(?=\S+$).{8,}"
+                title="<lang:print message="invalid_password"/>"
                 placeholder=<lang:print message="Password"/> name="password" required>
 
                 <button type="submit"><lang:print message="To_register"/></button></form>

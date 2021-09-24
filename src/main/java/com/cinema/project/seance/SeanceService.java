@@ -2,6 +2,7 @@ package com.cinema.project.seance;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 

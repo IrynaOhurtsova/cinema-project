@@ -8,10 +8,7 @@ import com.cinema.project.ticket.TicketService;
 import com.cinema.project.user.User;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -44,7 +41,7 @@ public class SeanceAndMovieService {
     public List<SeanceAndMovie> getSeanceForUserByTickets(User user, Locale locale) {
         List<Long> seanceIds = ticketService.getSeancesIdsByTickets(user);
         Map<Long, SeanceAndMovie> seancesByIds = getSeancesByIds(seanceIds, locale);
-        return new ArrayList<>(seancesByIds.values());
+        return sortByDate(new ArrayList<>(seancesByIds.values()));
     }
 
     public List<SeanceAndMovie> getSeancesPerPage(String firstValue, Locale locale) {
@@ -91,9 +88,14 @@ public class SeanceAndMovieService {
     }
 
     private List<SeanceAndMovie> getSeancesAndMovie(Map<Long, Movie> moviesById, List<Seance> seances) {
-        return seances.stream()
+        return sortByDate(seances.stream()
                 .map(seance -> new SeanceAndMovie(seance, moviesById.get(seance.getMovieId())))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+    }
+
+    private List<SeanceAndMovie> sortByDate(List<SeanceAndMovie> seances) {
+        seances.sort(Comparator.comparing(SeanceAndMovie::getDate));
+        return seances;
     }
 
 
