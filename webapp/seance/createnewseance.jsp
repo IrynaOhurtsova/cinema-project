@@ -26,7 +26,7 @@
         </p>
 
          <form method="GET" action="/app/cinema/seance/create"
-         onsubmit="alert('<lang:print message="You_have_created_new_seance"/>')">
+         onsubmit="return confirm('<lang:print message="Do_you_want_to_create_new_seance"/>?')">
               <div class="container">
               <label for="date"><b><lang:print message="Date"/>:</b></label>
               <input type="date" id="date" name="date" >
