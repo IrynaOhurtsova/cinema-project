@@ -63,8 +63,10 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         liquibaseStarter.updateDatabase();
 
         //user
+        String loginRegex = "[a-zA-Z]{4,20}";
+        String passwordRegex = "(?=.*[0-9])(?=.*[a-zA-Z])(?=\\S+$).{8,}";
         UserRepository userRepository = new UserRepository(dataSource);
-        ClientRegisterValidator clientRegisterValidator = new ClientRegisterValidator(userRepository);
+        ClientRegisterValidator clientRegisterValidator = new ClientRegisterValidator(userRepository, loginRegex, passwordRegex);
         UserLoginRequestDtoToClientMapper userLoginRequestDtoToClientMapper = new UserLoginRequestDtoToClientMapper();
         UserService userService = new UserService(userRepository, userLoginRequestDtoToClientMapper, clientRegisterValidator);
         Map<UserRole, ModelAndView> modelAndViewHome = new HashMap<>();

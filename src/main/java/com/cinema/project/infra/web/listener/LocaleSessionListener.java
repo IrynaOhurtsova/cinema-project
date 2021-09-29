@@ -25,6 +25,5 @@ public class LocaleSessionListener implements HttpSessionListener {
 
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
-
     }
 }

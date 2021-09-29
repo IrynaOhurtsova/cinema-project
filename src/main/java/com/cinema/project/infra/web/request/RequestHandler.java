@@ -8,9 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 @RequiredArgsConstructor
 public class RequestHandler {
+
+    private static final Logger logger = Logger.getLogger(RequestHandler.class.getName());
 
     private final List<ControllerFunctionHolder> controllerFunctionHolders;
     private final ExceptionHandler exceptionHandler;
@@ -28,11 +31,11 @@ public class RequestHandler {
     }
 
     private ModelAndView invokeController(HttpServletRequest req,
-                                            Function<HttpServletRequest, ModelAndView> handler) {
+                                          Function<HttpServletRequest, ModelAndView> handler) {
         try {
-            return  handler.apply(req);
+            return handler.apply(req);
         } catch (Exception exception) {
-            exception.printStackTrace();
+            logger.severe(exception.getMessage());
             return exceptionHandler.handle(exception);
         }
     }

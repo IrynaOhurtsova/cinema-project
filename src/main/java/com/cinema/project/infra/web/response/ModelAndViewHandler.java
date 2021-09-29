@@ -7,12 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class ModelAndViewHandler implements ResponseHandler<ModelAndView>{
+public class ModelAndViewHandler implements ResponseHandler<ModelAndView> {
 
     @SneakyThrows
     @Override
     public ModelAndView handle(ModelAndView modelAndView, HttpServletRequest request, HttpServletResponse response) {
-        if(modelAndView.isRedirect()) {
+        if (modelAndView.isRedirect()) {
             response.sendRedirect(request.getContextPath() + modelAndView.getView());
             return modelAndView;
         }

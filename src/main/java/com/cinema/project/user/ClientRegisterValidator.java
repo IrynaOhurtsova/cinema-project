@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 public class ClientRegisterValidator {
 
     private final UserRepository userRepository;
-    private final String loginRegex = "[a-zA-Z]{4,20}";
-    private final String passwordRegex = "(?=.*[0-9])(?=.*[a-zA-Z])(?=\\S+$).{8,}";
+    private final String loginRegex;
+    private final String passwordRegex;
 
     public User validate(User user) {
         if (!matchLogin(user)) {

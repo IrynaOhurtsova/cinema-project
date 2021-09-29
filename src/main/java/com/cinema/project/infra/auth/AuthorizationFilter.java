@@ -30,7 +30,7 @@ public class AuthorizationFilter implements Filter {
                 .map(authorizationPathMatcher -> hasRole(authorizationPathMatcher, httpServletRequest))
                 .orElse(true);
 
-        if(hasAccess) {
+        if (hasAccess) {
             chain.doFilter(request, response);
             return;
         }

@@ -1,5 +1,6 @@
 package com.cinema.project.user;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -16,10 +17,17 @@ public class ClientRegisterValidatorTest {
 
     @Mock
     private UserRepository userRepository;
-    @InjectMocks
+
     private ClientRegisterValidator clientRegisterValidator;
 
     private final User user = new User(1L, "ivanov", "ivanoV11", UserRole.CLIENT);
+
+    @Before
+    public void init() {
+        String loginRegex = "[a-zA-Z]{4,20}";
+        String passwordRegex = "(?=.*[0-9])(?=.*[a-zA-Z])(?=\\S+$).{8,}";
+        clientRegisterValidator = new ClientRegisterValidator(userRepository, loginRegex, passwordRegex);
+    }
 
     @Test
     public void validate() {
