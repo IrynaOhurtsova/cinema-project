@@ -98,5 +98,4 @@ public class SeanceAndMovieService {
         return seances;
     }
 
-
 }
