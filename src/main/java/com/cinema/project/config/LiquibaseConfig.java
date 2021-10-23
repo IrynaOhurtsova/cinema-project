@@ -1,28 +1,43 @@
-package com.cinema.project.infra.db;
+package com.cinema.project.config;
 
-import com.cinema.project.infra.config.ConfigLoader;
+import com.cinema.project.config.ConfigLoader;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.integration.spring.SpringLiquibase;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 
+@Configuration
 @RequiredArgsConstructor
-public class LiquibaseStarter {
+public class LiquibaseConfig {
 
     private static final String PATH = "liquibase.yml";
 
     private final DataSource dataSource;
     private final ConfigLoader configLoader;
+
+    @Bean
+    public SpringLiquibase liquibaseStarter() {
+        SpringLiquibase springLiquibase = new SpringLiquibase();
+        LiquibaseProperties liquibaseProperties = configLoader.loadConfig(PATH, LiquibaseProperties.class);
+        springLiquibase.setChangeLog(liquibaseProperties.getChangeLogPath());
+        springLiquibase.setDataSource(dataSource);
+        return springLiquibase;
+    }
 
     @SneakyThrows
     public void updateDatabase() {

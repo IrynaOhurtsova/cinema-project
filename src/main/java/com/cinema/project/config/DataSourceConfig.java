@@ -1,13 +1,15 @@
-package com.cinema.project.infra.db;
+package com.cinema.project.config;
 
-import com.cinema.project.infra.config.ConfigLoader;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
+@Configuration
 @RequiredArgsConstructor
 public class DataSourceConfig {
 
@@ -15,7 +17,8 @@ public class DataSourceConfig {
 
     private final ConfigLoader configLoader;
 
-    public DataSource configureDataSource() {
+    @Bean
+    public DataSource dataSource() {
         DataSourceProperties dataSourceProperties = configLoader.loadConfig(PATH_TO_CONFIG, DataSourceProperties.class);
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(dataSourceProperties.jdbcUrl);

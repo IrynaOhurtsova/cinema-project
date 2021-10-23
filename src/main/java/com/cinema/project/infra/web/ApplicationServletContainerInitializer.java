@@ -4,9 +4,9 @@ import com.cinema.project.seanceandmovie.SeanceAndMovieController;
 import com.cinema.project.seanceandmovie.SeanceAndMovieService;
 import com.cinema.project.ticketandseanceandmovie.TicketAndSeanceAndMovieController;
 import com.cinema.project.ticketandseanceandmovie.TicketAndSeanceAndMovieService;
-import com.cinema.project.infra.config.ConfigLoader;
-import com.cinema.project.infra.db.DataSourceConfig;
-import com.cinema.project.infra.db.LiquibaseStarter;
+import com.cinema.project.config.ConfigLoader;
+import com.cinema.project.config.DataSourceConfig;
+import com.cinema.project.config.LiquibaseConfig;
 import com.cinema.project.infra.web.exeption.handler.ExceptionHandler;
 import com.cinema.project.infra.web.exeption.handler.ExceptionHandlerConfig;
 import com.cinema.project.infra.web.request.ControllerFunctionHolder;
@@ -58,9 +58,9 @@ public class ApplicationServletContainerInitializer implements ServletContainerI
         QueryValueResolver queryValueResolver = new QueryValueResolver(objectMapper);
 
         //datasource
-        DataSource dataSource = new DataSourceConfig(configLoader).configureDataSource();
-        LiquibaseStarter liquibaseStarter = new LiquibaseStarter(dataSource, configLoader);
-        liquibaseStarter.updateDatabase();
+        DataSource dataSource = new DataSourceConfig(configLoader).dataSource();
+        LiquibaseConfig liquibaseConfig = new LiquibaseConfig(dataSource, configLoader);
+        liquibaseConfig.updateDatabase();//?????????
 
         //user
         String loginRegex = "[a-zA-Z]{4,20}";

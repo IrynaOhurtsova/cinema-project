@@ -2,6 +2,8 @@ package com.cinema.project.movie;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -11,6 +13,7 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Repository
 @RequiredArgsConstructor
 public class MovieRepository {
 

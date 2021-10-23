@@ -2,9 +2,12 @@ package com.cinema.project.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
