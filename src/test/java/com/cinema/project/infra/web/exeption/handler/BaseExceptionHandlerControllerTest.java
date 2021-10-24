@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-public class BaseExceptionHandlerTest {
+public class BaseExceptionHandlerControllerTest {
 
     private final ExceptionHandlerFunctionHolder exceptionHandlerFunctionHolder =
             new ExceptionHandlerFunctionHolder(exception -> exception instanceof UserLoginException, exception -> ModelAndView.withView(exception.getMessage()));

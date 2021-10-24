@@ -4,6 +4,7 @@ import com.cinema.project.infra.web.QueryValueResolver;
 import com.cinema.project.infra.web.response.ModelAndView;
 import com.cinema.project.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+@Controller
 @RequiredArgsConstructor
 public class SeanceController {
 

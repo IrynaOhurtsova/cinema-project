@@ -3,9 +3,11 @@ package com.cinema.project.seance;
 import com.cinema.project.movie.Movie;
 import com.cinema.project.movie.MovieService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 
+@Component
 @RequiredArgsConstructor
 public class SeanceCreateDtoToSeanceMapper {
 
