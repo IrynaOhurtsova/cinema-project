@@ -20,7 +20,7 @@ public class MainWebAppInitializer implements WebApplicationInitializer {
         servletContext.addListener(new ContextLoaderListener(context));
         ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher", new DispatcherServlet(context));
         dispatcher.setLoadOnStartup(1);
-        dispatcher.addMapping("/");
+        dispatcher.addMapping("/cinema/*");
         LocaleSessionListenerConfiguration localeSessionListenerConfiguration = new LocaleSessionListenerConfiguration();
         LocaleSessionListener localeSessionListener = localeSessionListenerConfiguration.localeSessionListener();
         servletContext.addListener(localeSessionListener);

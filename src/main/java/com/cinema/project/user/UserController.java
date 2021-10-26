@@ -3,6 +3,12 @@ package com.cinema.project.user;
 import com.cinema.project.infra.web.QueryValueResolver;
 import com.cinema.project.infra.web.response.ModelAndView;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.context.annotation.SessionScope;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,6 +16,8 @@ import javax.servlet.http.HttpSession;
 import java.util.Locale;
 import java.util.Map;
 
+@Controller
+@SessionAttributes(names = "selectedLocale")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -17,13 +25,14 @@ public class UserController {
     private final QueryValueResolver queryValueResolver;
     private final Map<UserRole, ModelAndView> modelAndViewHome;
 
-    public ModelAndView changeLocale(HttpServletRequest request) {
-        String selectedLocale = request.getParameter("selectedLocale");
-        String view = request.getParameter("view");
-        Locale locale = new Locale(selectedLocale);
-        HttpSession session = request.getSession(false);
-        session.setAttribute("selectedLocale", locale);
-        return new ModelAndView(view, true);
+    @GetMapping("/user/change/language")
+    public String changeLocale(@RequestParam(name = "view") String view) {
+        return "redirect:" + view;
+    }
+
+    @ModelAttribute("selectedLocale")
+    public Locale selectedLocale(@RequestParam(name = "selectedLocale") String selectedLocale) {
+        return new Locale(selectedLocale);
     }
 
     public ModelAndView login(HttpServletRequest request) {

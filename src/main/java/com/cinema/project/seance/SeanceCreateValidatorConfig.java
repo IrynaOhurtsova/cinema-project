@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalTime;
 
 @Component
-@PropertySource("classpath:validatorconfig.properties")
+@PropertySource("classpath:validatorseanceconfig.properties")
 @Value
 public class SeanceCreateValidatorConfig {
 

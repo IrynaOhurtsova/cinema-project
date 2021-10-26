@@ -1,5 +1,8 @@
 package com.cinema.project.user;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class UserLoginRequestDtoToClientMapper {
 
     public User map(UserLoginRequestDto userLoginRequestDto) {

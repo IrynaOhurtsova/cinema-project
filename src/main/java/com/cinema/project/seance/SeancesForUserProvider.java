@@ -11,10 +11,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SeancesForUserProvider {
 
-    private final Map<UserRole, ModelAndView> modelByRole;
-    private final ModelAndView defaultModel;
+    private final Map<UserRole, String> modelByRole;
+    private final String defaultModel;
 
-    public ModelAndView getModelAndViewForUser(User user) {
+    public String getModelAndViewForUser(User user) {
         return Optional.ofNullable(user)
                 .map(User::getRole)
                 .map(modelByRole::get)

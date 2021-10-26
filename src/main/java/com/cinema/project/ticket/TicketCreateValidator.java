@@ -3,7 +3,9 @@ package com.cinema.project.ticket;
 import com.cinema.project.seance.Seance;
 import com.cinema.project.seance.SeanceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
 public class TicketCreateValidator {
 

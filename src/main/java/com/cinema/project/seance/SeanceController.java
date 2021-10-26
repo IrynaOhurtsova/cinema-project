@@ -5,6 +5,7 @@ import com.cinema.project.infra.web.response.ModelAndView;
 import com.cinema.project.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,24 +14,24 @@ import java.util.Locale;
 import java.util.Map;
 
 @Controller
+@RequestMapping("/seance")
 @RequiredArgsConstructor
 public class SeanceController {
 
     private final SeanceService seanceService;
     private final QueryValueResolver queryValueResolver;
 
-    public ModelAndView createSeance(HttpServletRequest request) {
-        SeanceCreateDto seanceCreateDto = queryValueResolver.getObject(request, SeanceCreateDto.class);
-        HttpSession session = request.getSession();
-        Locale selectedLocale = (Locale) session.getAttribute("selectedLocale");
+    @GetMapping("/create")
+    public String createSeance(@RequestParam Map<String, String> allParams, @SessionAttribute(name = "selectedLocale") Locale selectedLocale) {
+        SeanceCreateDto seanceCreateDto = queryValueResolver.getObject(allParams, SeanceCreateDto.class);
         seanceService.createSeance(seanceCreateDto, selectedLocale);
-        return new ModelAndView("/cinema/mainpage", true);
+        return "redirect:/cinema/mainpage";
     }
 
-    public ModelAndView delete(HttpServletRequest request) {
-        String id = request.getParameter("seanceId");
+    @PostMapping("/delete")
+    public String delete(@RequestParam(name = "seanceId") String id) {
         seanceService.deleteSeanceById(Long.valueOf(id));
-        return new ModelAndView("/cinema/mainpage", true);
+        return "redirect:/cinema/mainpage";
     }
 
 }

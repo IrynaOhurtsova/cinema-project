@@ -1,9 +1,15 @@
 package com.cinema.project.seanceandmovie;
 
-import com.cinema.project.infra.web.response.ModelAndView;
 import com.cinema.project.seance.SeancesForUserProvider;
 import com.cinema.project.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -11,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+@Controller
 @RequiredArgsConstructor
 public class SeanceAndMovieController {
 
@@ -18,53 +25,38 @@ public class SeanceAndMovieController {
     private final SeancesForUserProvider paginationViewProvider;
     private final SeancesForUserProvider mainPageViewProvider;
 
-    public ModelAndView allSeances(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Locale selectedLocale = (Locale) session.getAttribute("selectedLocale");
+    @GetMapping("/mainpage")
+    public String allSeances(@SessionAttribute(name = "selectedLocale") Locale selectedLocale, @SessionAttribute(name = "user") User user, Model model) {
         List<SeanceAndMovie> seances = seanceAndMovieService.getAllSeances(selectedLocale);
-        User user = (User) session.getAttribute("user");
-        ModelAndView modelAndView = mainPageViewProvider.getModelAndViewForUser(user);
-        modelAndView.addAttribute("seances", seances);
-        return modelAndView;
+        model.addAttribute("seances", seances);
+        return mainPageViewProvider.getModelAndViewForUser(user);
     }
 
-    public ModelAndView pagination(HttpServletRequest request) {
-        String firstValue = request.getParameter("value");
-        HttpSession session = request.getSession();
-        Locale selectedLocale = (Locale) session.getAttribute("selectedLocale");
-
+    @GetMapping("/seance/page")
+    public String pagination(@RequestParam(name = "value") String firstValue, @SessionAttribute(name = "selectedLocale") Locale selectedLocale, @SessionAttribute(name = "user") User user, Model model) {
         Map<Integer, Integer> pageAndFirstValue = seanceAndMovieService.getPageAndFirstValue();
         List<SeanceAndMovie> seancesPerPage = seanceAndMovieService.getSeancesPerPage(firstValue, selectedLocale);
 
-        User user = (User) session.getAttribute("user");
-        ModelAndView modelAndView = paginationViewProvider.getModelAndViewForUser(user);
-        modelAndView.addAttribute("pageAndFirstValue", pageAndFirstValue);
-        modelAndView.addAttribute("seances", seancesPerPage);
-        return modelAndView;
+        model.addAttribute("pageAndFirstValue", pageAndFirstValue);
+        model.addAttribute("seances", seancesPerPage);
+        return paginationViewProvider.getModelAndViewForUser(user);
     }
 
-    public ModelAndView paginationForAvailableSeances(HttpServletRequest request) {
-        String firstValue = request.getParameter("value");
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        Locale selectedLocale = (Locale) session.getAttribute("selectedLocale");
 
+    @GetMapping("/seance/available/page")
+    public String paginationForAvailableSeances(@RequestParam(name = "value") String firstValue, @SessionAttribute(name = "selectedLocale") Locale selectedLocale, @SessionAttribute(name = "user") User user, Model model) {
         Map<Integer, Integer> pageAndFirstValue = seanceAndMovieService.getPageAndFirstValueForUser(user);
         List<SeanceAndMovie> seancesPerPage = seanceAndMovieService.getSeancesPerPageForUser(user, firstValue, selectedLocale);
 
-        ModelAndView modelAndView = ModelAndView.withView("/pages/available.jsp");
-        modelAndView.addAttribute("pageAndFirstValue", pageAndFirstValue);
-        modelAndView.addAttribute("seances", seancesPerPage);
-        return modelAndView;
+        model.addAttribute("pageAndFirstValue", pageAndFirstValue);
+        model.addAttribute("seances", seancesPerPage);
+        return "/pages/available";
     }
 
-    public ModelAndView getSeancesForUserByTickets(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        Locale selectedLocale = (Locale) session.getAttribute("selectedLocale");
+    @GetMapping("/seance/available")
+    public String getSeancesForUserByTickets(@SessionAttribute(name = "selectedLocale") Locale selectedLocale, @SessionAttribute(name = "user") User user, Model model) {
         List<SeanceAndMovie> seances = seanceAndMovieService.getSeanceForUserByTickets(user, selectedLocale);
-        ModelAndView modelAndView = ModelAndView.withView("/seance/available.jsp");
-        modelAndView.addAttribute("seances", seances);
-        return modelAndView;
+        model.addAttribute("seances", seances);
+        return "/seance/available";
     }
 }

@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 @RequiredArgsConstructor
 public class UserRepository {
 

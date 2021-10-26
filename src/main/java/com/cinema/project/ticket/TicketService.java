@@ -2,11 +2,13 @@ package com.cinema.project.ticket;
 
 import com.cinema.project.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+@Service
 @RequiredArgsConstructor
 public class TicketService {
 

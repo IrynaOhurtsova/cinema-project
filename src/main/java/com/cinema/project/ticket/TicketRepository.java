@@ -2,6 +2,7 @@ package com.cinema.project.ticket;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+@Repository
 @RequiredArgsConstructor
 public class TicketRepository {
 
