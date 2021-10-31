@@ -1,15 +1,11 @@
 package com.cinema.project.ticket;
 
-import com.cinema.project.infra.web.response.ModelAndView;
 import com.cinema.project.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Controller
 @RequiredArgsConstructor

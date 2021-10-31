@@ -27,7 +27,7 @@
         </form>
 
        <form action="/app/cinema/user/change/language" method="GET">
-          <input type="hidden" name="view" value=""/>
+          <input type="hidden" name="view" value="/"/>
                    <select name="selectedLocale">
                            <c:forEach var="locale" items="${sessionScope.locales}">
                                <option value="${locale}">

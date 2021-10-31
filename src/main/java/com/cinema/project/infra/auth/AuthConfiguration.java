@@ -7,7 +7,7 @@ import java.util.List;
 
 public class AuthConfiguration {
 
-    AuthorizationFilter authorizationFilter() {
+    public AuthorizationFilter authorizationFilter() {
         return new AuthorizationFilter(authorizationPathMatcherList());
     }
 

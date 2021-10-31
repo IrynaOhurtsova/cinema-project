@@ -26,14 +26,14 @@ public class SeanceAndMovieController {
     private final SeancesForUserProvider mainPageViewProvider;
 
     @GetMapping("/mainpage")
-    public String allSeances(@SessionAttribute(name = "selectedLocale") Locale selectedLocale, @SessionAttribute(name = "user") User user, Model model) {
+    public String allSeances(@SessionAttribute(name = "selectedLocale") Locale selectedLocale, @SessionAttribute(required = false, name = "user") User user, Model model) {
         List<SeanceAndMovie> seances = seanceAndMovieService.getAllSeances(selectedLocale);
         model.addAttribute("seances", seances);
         return mainPageViewProvider.getModelAndViewForUser(user);
     }
 
     @GetMapping("/seance/page")
-    public String pagination(@RequestParam(name = "value") String firstValue, @SessionAttribute(name = "selectedLocale") Locale selectedLocale, @SessionAttribute(name = "user") User user, Model model) {
+    public String pagination(@RequestParam(name = "value") String firstValue, @SessionAttribute(name = "selectedLocale") Locale selectedLocale, @SessionAttribute(required = false, name = "user") User user, Model model) {
         Map<Integer, Integer> pageAndFirstValue = seanceAndMovieService.getPageAndFirstValue();
         List<SeanceAndMovie> seancesPerPage = seanceAndMovieService.getSeancesPerPage(firstValue, selectedLocale);
 

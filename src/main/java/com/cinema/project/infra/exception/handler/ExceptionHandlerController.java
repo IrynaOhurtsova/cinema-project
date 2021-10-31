@@ -1,4 +1,4 @@
-package com.cinema.project.controller;
+package com.cinema.project.infra.exception.handler;
 
 import com.cinema.project.movie.MovieNotFoundException;
 import com.cinema.project.seance.SeanceCreateException;

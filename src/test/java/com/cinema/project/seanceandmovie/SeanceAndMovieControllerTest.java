@@ -1,6 +1,5 @@
 package com.cinema.project.seanceandmovie;
 
-import com.cinema.project.infra.web.response.ModelAndView;
 import com.cinema.project.movie.Movie;
 import com.cinema.project.seance.Seance;
 import com.cinema.project.seance.SeancesForUserProvider;
@@ -9,12 +8,10 @@ import com.cinema.project.user.UserRole;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.ui.Model;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
@@ -22,8 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -36,9 +32,7 @@ public class SeanceAndMovieControllerTest {
     @Mock
     private SeancesForUserProvider mainPageViewProvider;
     @Mock
-    private HttpServletRequest httpServletRequest;
-    @Mock
-    private HttpSession session;
+    private Model model;
 
     private SeanceAndMovieController seanceAndMovieController;
 
@@ -55,16 +49,13 @@ public class SeanceAndMovieControllerTest {
 
     @Test
     public void allSeances() {
-        ModelAndView expected = ModelAndView.withView("");
-        expected.addAttribute("seances", expectedSeancesAndMovieList);
+        String expected = "";
 
-        when(httpServletRequest.getSession()).thenReturn(session);
-        when(session.getAttribute("selectedLocale")).thenReturn(Locale.CANADA);
         when(seanceAndMovieService.getAllSeances(Locale.CANADA)).thenReturn(expectedSeancesAndMovieList);
-        when(session.getAttribute("user")).thenReturn(user);
-        when(mainPageViewProvider.getModelAndViewForUser(user)).thenReturn(ModelAndView.withView(""));
+        when(model.addAttribute("seances", expectedSeancesAndMovieList)).thenReturn(model);
+        when(mainPageViewProvider.getModelAndViewForUser(user)).thenReturn("");
 
-        ModelAndView result = seanceAndMovieController.allSeances(httpServletRequest);
+        String result = seanceAndMovieController.allSeances(Locale.CANADA, user, model);
 
         assertEquals(expected, result);
     }
@@ -73,19 +64,15 @@ public class SeanceAndMovieControllerTest {
     public void pagination() {
         Map<Integer, Integer> pageAndFirstValue = Collections.singletonMap(1, 0);
 
-        ModelAndView expected = ModelAndView.withView("");
-        expected.addAttribute("pageAndFirstValue", pageAndFirstValue);
-        expected.addAttribute("seances", expectedSeancesAndMovieList);
+        String expected = "";
 
-        when(httpServletRequest.getParameter(anyString())).thenReturn("0");
-        when(httpServletRequest.getSession()).thenReturn(session);
-        when(session.getAttribute("selectedLocale")).thenReturn(Locale.CANADA);
         when(seanceAndMovieService.getPageAndFirstValue()).thenReturn(pageAndFirstValue);
         when(seanceAndMovieService.getSeancesPerPage("0", Locale.CANADA)).thenReturn(expectedSeancesAndMovieList);
-        when(session.getAttribute("user")).thenReturn(user);
-        when(paginationViewProvider.getModelAndViewForUser(user)).thenReturn(ModelAndView.withView(""));
+        when(model.addAttribute("pageAndFirstValue", pageAndFirstValue)).thenReturn(model);
+        when(model.addAttribute("seances", expectedSeancesAndMovieList)).thenReturn(model);
+        when(paginationViewProvider.getModelAndViewForUser(user)).thenReturn("");
 
-        ModelAndView result = seanceAndMovieController.pagination(httpServletRequest);
+        String result = seanceAndMovieController.pagination(String.valueOf(0), Locale.CANADA, user, model);
 
         assertEquals(expected, result);
     }
@@ -94,33 +81,26 @@ public class SeanceAndMovieControllerTest {
     public void paginationForAvailableSeances() {
         Map<Integer, Integer> pageAndFirstValue = Collections.singletonMap(1, 0);
 
-        ModelAndView expected = ModelAndView.withView("/pages/available.jsp");
-        expected.addAttribute("pageAndFirstValue", pageAndFirstValue);
-        expected.addAttribute("seances", expectedSeancesAndMovieList);
+        String expected = "/pages/available";
 
-        when(httpServletRequest.getParameter(anyString())).thenReturn("0");
-        when(httpServletRequest.getSession()).thenReturn(session);
-        when(session.getAttribute("selectedLocale")).thenReturn(Locale.CANADA);
         when(seanceAndMovieService.getPageAndFirstValueForUser(user)).thenReturn(pageAndFirstValue);
         when(seanceAndMovieService.getSeancesPerPageForUser(user, "0", Locale.CANADA)).thenReturn(expectedSeancesAndMovieList);
-        when(session.getAttribute("user")).thenReturn(user);
+        when(model.addAttribute("pageAndFirstValue", pageAndFirstValue)).thenReturn(model);
+        when(model.addAttribute("seances", expectedSeancesAndMovieList)).thenReturn(model);
 
-        ModelAndView result = seanceAndMovieController.paginationForAvailableSeances(httpServletRequest);
+        String result = seanceAndMovieController.paginationForAvailableSeances(String.valueOf(0), Locale.CANADA, user, model);
 
         assertEquals(expected, result);
     }
 
     @Test
     public void getSeancesForUserByTickets() {
-        ModelAndView expected = ModelAndView.withView("/seance/available.jsp");
-        expected.addAttribute("seances", expectedSeancesAndMovieList);
+        String expected = "/seance/available";
 
-        when(httpServletRequest.getSession()).thenReturn(session);
-        when(session.getAttribute("user")).thenReturn(user);
-        when(session.getAttribute("selectedLocale")).thenReturn(Locale.CANADA);
         when(seanceAndMovieService.getSeanceForUserByTickets(user, Locale.CANADA)).thenReturn(expectedSeancesAndMovieList);
+        when(model.addAttribute("seances", expectedSeancesAndMovieList)).thenReturn(model);
 
-        ModelAndView result = seanceAndMovieController.getSeancesForUserByTickets(httpServletRequest);
+        String result = seanceAndMovieController.getSeancesForUserByTickets(Locale.CANADA, user, model);
 
         assertEquals(expected, result);
     }

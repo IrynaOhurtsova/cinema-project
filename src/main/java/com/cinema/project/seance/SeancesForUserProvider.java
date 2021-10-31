@@ -1,6 +1,5 @@
 package com.cinema.project.seance;
 
-import com.cinema.project.infra.web.response.ModelAndView;
 import com.cinema.project.user.User;
 import com.cinema.project.user.UserRole;
 import lombok.RequiredArgsConstructor;

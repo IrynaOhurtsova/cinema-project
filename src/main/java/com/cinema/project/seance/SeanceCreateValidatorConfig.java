@@ -1,5 +1,8 @@
 package com.cinema.project.seance;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -7,8 +10,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalTime;
 
 @Component
-@PropertySource("classpath:validatorseanceconfig.properties")
-@Value
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SeanceCreateValidatorConfig {
 
     @org.springframework.beans.factory.annotation.Value("${maxSeatingCapacity}")

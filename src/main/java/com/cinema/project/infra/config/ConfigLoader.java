@@ -1,4 +1,4 @@
-package com.cinema.project.config;
+package com.cinema.project.infra.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

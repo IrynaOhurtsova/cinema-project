@@ -6,7 +6,10 @@ import com.cinema.project.seance.Seance;
 import com.cinema.project.seance.SeanceService;
 import com.cinema.project.ticket.TicketService;
 import com.cinema.project.user.User;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -16,8 +19,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
-@PropertySource("classpath:validatorseanceconfig.properties")
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
+@AllArgsConstructor
 public class SeanceAndMovieService {
 
     private final SeanceService seanceService;
@@ -25,7 +28,7 @@ public class SeanceAndMovieService {
     private final TicketService ticketService;
 
     @Value("${counterSeancesPerPage}")
-    private final Integer counterSeancesPerPage;
+    private Integer counterSeancesPerPage;
 
     public List<SeanceAndMovie> getAllSeances(Locale locale) {
         List<Seance> seances = seanceService.getAllSeances();
