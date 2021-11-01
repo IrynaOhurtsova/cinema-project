@@ -11,12 +11,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-@EnableWebMvc
 @Configuration
-@PropertySource("classpath:/property/validator/seancecreatevalidatorconfig.properties")
-@PropertySource("classpath:/property/validator/clientregistervalidator.properties")
-@PropertySource("classpath:/property/datasource/datasourceconfig.properties")
 @ComponentScan(basePackages = {"com.cinema.project"})
+@EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
 
     @Override

@@ -1,4 +1,4 @@
-package com.cinema.project.config;
+package com.cinema.project.movie;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @Configuration
-public class MovieRepositoryConfig {
+public class MovieConfig {
 
     @Bean
     public Map<Locale, String> titleColumns() {

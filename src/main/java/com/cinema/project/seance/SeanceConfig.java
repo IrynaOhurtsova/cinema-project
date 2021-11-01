@@ -1,16 +1,16 @@
-package com.cinema.project.config;
+package com.cinema.project.seance;
 
-import com.cinema.project.seance.SeancesForUserProvider;
 import com.cinema.project.user.UserRole;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class SeanceForUserProviderConfig {
+@PropertySource("classpath:/property/validator/seancecreatevalidatorconfig.properties")
+public class SeanceConfig {
 
     @Bean
     public Map<UserRole, String> paginationViewMap() {

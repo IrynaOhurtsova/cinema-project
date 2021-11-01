@@ -1,4 +1,4 @@
-package com.cinema.project;
+package com.cinema.project.config;
 
 import com.cinema.project.infra.auth.AuthConfiguration;
 import com.cinema.project.infra.web.listener.LocaleSessionListener;
